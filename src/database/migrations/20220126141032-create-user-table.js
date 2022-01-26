@@ -25,16 +25,18 @@ module.exports = {
         allowNull: false
       },
       passwordResetToken: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: true
       },
       resetTokenExpiration: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        allowNull: true
       },
-      created_at: {
+      createdAt: {
         type: Sequelize.DATE,
         allowNull: false
       },
-      updated_at: {
+      updatedAt: {
         type: Sequelize.DATE,
         allowNull: false
       }
