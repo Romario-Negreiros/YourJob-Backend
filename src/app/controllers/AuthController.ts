@@ -1,7 +1,8 @@
 import { Request, Response } from 'express'
-import jwt from 'jsonwebtoken'
-import jwtConfig from '../../config/jwtConfig.json'
 import { User } from '../models'
+import jwt from 'jsonwebtoken'
+import bcrypt from 'bcryptjs'
+import jwtConfig from '../../config/jwtConfig.json'
 
 const generateJwtToken = (payload: Object, expirationTime: number): string => {
   return jwt.sign(payload, jwtConfig.secret, {
@@ -53,10 +54,41 @@ class AuthController {
     } catch (err) {
       if (err.name.includes('UniqueConstraint')) {
         return res.status(400).json({ error: 'This email is already in use!' })
-      } else {
-        console.log(err.message)
-        return res.status(500).json({ error: 'Internal server error, please try again!' })
       }
+      return res.status(500).json({ error: 'Internal server error, please try again!' })
+    }
+  }
+
+  public async authenticate (req: Request, res: Response): Promise<any> {
+    const { password, email } = req.body
+    const nullField = checkFieldsNotNull([password, email])
+
+    if (nullField) {
+      return res.status(400).json({ error: nullField })
+    }
+
+    try {
+      const user = await User.findOne({
+        where: {
+          email
+        }
+      })
+      if (!user) {
+        return res.status(404).json({ error: 'This user does not exist!' })
+      }
+
+      const matchPWD = await bcrypt.compare(password, user.password)
+      if (!matchPWD) {
+        return res.status(400).json({ error: 'Wrong password!' })
+      }
+
+      user.password = undefined
+
+      const token = generateJwtToken({ user_id: user.id }, 86400)
+
+      return res.status(200).json({ user, token })
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
   }
 }
