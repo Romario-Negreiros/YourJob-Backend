@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { User } from '../models'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
-import jwtConfig from '../../config/jwtConfig.json'
+import jwtConfig from '../../config/jwt.json'
 
 const generateJwtToken = (payload: Object, expirationTime: number): string => {
   return jwt.sign(payload, jwtConfig.secret, {
@@ -32,7 +32,7 @@ const checkFieldsNotNull = (fields: Array<string>): null | string => {
 
 class AuthController {
   public async register (req: Request, res: Response): Promise<any> {
-    const { password, email, name } = req.body
+    const { password, email, name, pictureURL } = req.body
     const nullField = checkFieldsNotNull([password, email, name])
 
     if (nullField) {
@@ -43,7 +43,8 @@ class AuthController {
       const user = await User.create({
         name,
         email: email.toLowerCase(),
-        password
+        password,
+        pictureURL
       })
 
       user.password = undefined
