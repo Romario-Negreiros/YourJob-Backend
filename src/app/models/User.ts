@@ -7,6 +7,7 @@ class User extends Model {
   public name!: string
   public email!: string
   public password!: string
+  public pictureURL!: string | null
   public passwordResetToken!: string | null
   public resetTokenExpiration!: Date | null
   public readonly createdAt!: Date
@@ -18,6 +19,7 @@ User.init(
     name: DataTypes.STRING,
     email: DataTypes.STRING,
     password: DataTypes.STRING,
+    pictureURL: DataTypes.STRING,
     passwordResetToken: DataTypes.STRING,
     resetTokenExpiration: DataTypes.DATE
   },
