@@ -4,8 +4,6 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import jwtConfig from '../../config/jwt.json'
 import crypto from 'crypto'
-import path from 'path'
-import fs from 'fs'
 
 const generateJwtToken = (payload: Object, expirationTime: number): string => {
   return jwt.sign(payload, jwtConfig.secret, {
@@ -53,14 +51,6 @@ class AuthController {
 
       const token = generateJwtToken({ user_id: user.id }, 86400)
 
-      const temp = path.resolve(__dirname, '..', '..', '..', 'tmp', 'uploads')
-      fs.readdirSync(temp).forEach(file => {
-        fs.rm(`${temp}/${file}`, err => {
-          if (err) {
-            throw err
-          }
-        })
-      })
       return res.status(201).json({ user, token })
     } catch (err) {
       console.log(err)
