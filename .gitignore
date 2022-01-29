@@ -1,8 +1,6 @@
 node_modules
 .eslintrc.js
-.sequelizerc
 nodemon.json
-
 *.env
 *.drawio
 *.txt
