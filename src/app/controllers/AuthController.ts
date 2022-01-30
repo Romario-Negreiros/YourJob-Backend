@@ -35,7 +35,7 @@ const checkFieldsNotNull = (fields: Array<string>): null | string => {
 }
 
 class AuthController {
-  public async register (req: Request, res: Response): Promise<any> {
+  public async register (req: Request, res: Response) {
     const { password, email, name } = req.body
     const nullField = checkFieldsNotNull([password, email, name])
 
@@ -44,17 +44,34 @@ class AuthController {
     }
 
     try {
+      const verifyEmailToken = crypto.randomBytes(20).toString('hex')
+
+      const verifyTokenExpiration = new Date()
+      verifyTokenExpiration.setHours(verifyTokenExpiration.getHours() + 1)
+
       const user = await User.create({
         name,
         email: email.toLowerCase(),
-        password
+        password,
+        verifyEmailToken,
+        verifyTokenExpiration
       })
 
+      mail.to = 'nromario482@gmail.com'
+      mail.subject = 'Verify your email'
+      mail.templateName = 'verify-email'
+      mail.templateVars = {
+        name: user.name,
+        email,
+        link: `http://localhost:3333/auth/verify_email/${user.id}/${user.verifyEmailToken}`
+      }
+      mail.sendMail()
+      if (mail.error) {
+        return res.status(500).json({ error: mail.error })
+      }
       user.password = undefined
 
-      const token = generateJwtToken({ user_id: user.id }, 86400)
-
-      return res.status(201).json({ user, token })
+      return res.status(201).json({ user })
     } catch (err) {
       console.log(err)
       if (err.name.includes('UniqueConstraint')) {
@@ -64,7 +81,42 @@ class AuthController {
     }
   }
 
-  public async authenticate (req: Request, res: Response): Promise<any> {
+  public async verifyEmail (req: Request, res: Response) {
+    const { userID, token } = req.params
+
+    try {
+      const user = await User.findByPk(userID)
+
+      if (!user) {
+        return res.status(404).json({ error: 'This user does not exist!' })
+      }
+
+      if (!user.verifyEmailToken && !user.verifyTokenExpiration) {
+        return res.status(400).json({ user, error: 'This email is already verified!' })
+      }
+
+      if (user.verifyEmailToken !== token) {
+        return res.status(400).json({ error: 'Invalid token!' })
+      }
+
+      const now = new Date()
+      if (now > user.verifyTokenExpiration) {
+        return res.status(400).json({ error: 'Verify email token has expirated, register again and verify in time!' })
+      }
+
+      user.verifyEmailToken = null
+      user.verifyTokenExpiration = null
+      await user.save()
+
+      user.password = undefined
+
+      return res.status(200).json({ user, success: 'Email succesfully verified!' })
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error, please try again!' })
+    }
+  }
+
+  public async authenticate (req: Request, res: Response) {
     const { password, email } = req.body
     const nullField = checkFieldsNotNull([password, email])
 
@@ -101,7 +153,7 @@ class AuthController {
     }
   }
 
-  public async forgotPassword (req: Request, res: Response): Promise<any> {
+  public async forgotPassword (req: Request, res: Response) {
     const { email } = req.body
 
     try {
@@ -130,7 +182,7 @@ class AuthController {
       mail.templateVars = {
         name: user.name,
         email,
-        resetLink: `http://localhost:3333/auth/reset_password/${user.passwordResetToken}`
+        link: `http://localhost:3333/auth/reset_password/${user.passwordResetToken}`
       }
       mail.sendMail()
       if (mail.error) {
@@ -139,13 +191,13 @@ class AuthController {
 
       return res
         .status(200)
-        .json({ success: 'Token to reset password was succesfully generated and the email was sent!' })
+        .json({ success: 'Token to reset password was succesfully generated and the email was   xsent!' })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
   }
 
-  public async resetPassword (req: Request, res: Response): Promise<any> {
+  public async resetPassword (req: Request, res: Response) {
     const { token } = req.params
     const { password, email } = req.body
     const nullField = checkFieldsNotNull([password, email])
@@ -179,6 +231,8 @@ class AuthController {
       }
 
       user.password = password
+      user.passwordResetToken = null
+      user.resetTokenExpiration = null
       await user.save()
 
       return res.status(200).json({ success: 'Password succesfully changed!' })
