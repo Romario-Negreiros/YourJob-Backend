@@ -4,6 +4,9 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import jwtConfig from '../../config/jwt.json'
 import crypto from 'crypto'
+import Mail from '../../lib/email/nodemailer'
+
+const mail = new Mail()
 
 const generateJwtToken = (payload: Object, expirationTime: number): string => {
   return jwt.sign(payload, jwtConfig.secret, {
@@ -121,9 +124,22 @@ class AuthController {
       user.resetTokenExpiration = tokenExpiration
       await user.save()
 
+      mail.to = 'nromario482@gmail.com'
+      mail.subject = 'Reset your password'
+      mail.templateName = 'reset-password'
+      mail.templateVars = {
+        name: user.name,
+        email,
+        resetLink: `http://localhost:3333/auth/reset_password/${user.passwordResetToken}`
+      }
+      mail.sendMail()
+      if (mail.error) {
+        return res.status(500).json({ error: mail.error })
+      }
+
       return res
         .status(200)
-        .json({ success: 'Token to reset password was succesfully generated and sent!' })
+        .json({ success: 'Token to reset password was succesfully generated and the email was sent!' })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
