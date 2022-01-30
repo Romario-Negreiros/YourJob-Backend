@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <title>Verify email</title>
+  </head>
+  <style>
+    body {
+      color: #000;
+      font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 24px;
+    }
+    h1 {
+      font-size: 20px;
+      text-align: center;
+    }
+    p {
+      font-size: 16px;
+    }
+    a {
+      color: #0080FF;
+    }
+  </style>
+  <body>
+    <h1>Hello, <%= name %></h1>
+    <hr />
+    <p>Thanks for creating an account in YourJob.com, verify this email address (<%= email %>) to get your account finished!</p>
+    <p><a href="<%= link %>">Verify email</a></p>
+  </body>
+</html>

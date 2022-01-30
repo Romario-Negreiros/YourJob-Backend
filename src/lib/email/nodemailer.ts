@@ -9,7 +9,7 @@ import juice from 'juice'
 interface TemplateVars {
   name: string;
   email: string;
-  resetLink: string;
+  link: string;
 }
 
 class Mail {
