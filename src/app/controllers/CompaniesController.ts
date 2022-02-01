@@ -1,18 +1,26 @@
 import { Request, Response } from 'express'
-import { User } from '../models'
-import bcrypt from 'bcryptjs'
+import { Company } from '../models'
+import { checkFieldsNotNull, generateJwt } from '../../modules'
 import crypto from 'crypto'
+import bcrypt from 'bcryptjs'
 import Mail from '../../lib/email/nodemailer'
-import { generateJwt, checkFieldsNotNull } from '../../modules'
+import libphonenumber from 'google-libphonenumber'
 
+const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance()
 const mail = new Mail()
 
-class AuthController {
+class CompaniesController {
   public async register (req: Request, res: Response) {
-    const { password, email, name } = req.body
     const nullField = checkFieldsNotNull(req.body)
     if (nullField) {
       return res.status(400).json({ error: nullField })
+    }
+    const isPhoneNumberValid = phoneUtil.isValidNumberForRegion(
+      phoneUtil.parse(req.body.phoneNumber, req.body.alpha2Code),
+      req.body.alpha2Code
+    )
+    if (!isPhoneNumberValid) {
+      return res.status(400).json({ error: 'Invalid phone number!' })
     }
 
     try {
@@ -21,10 +29,8 @@ class AuthController {
       const verifyTokenExpiration = new Date()
       verifyTokenExpiration.setHours(verifyTokenExpiration.getHours() + 1)
 
-      const user = await User.create({
-        name,
-        email: email.toLowerCase(),
-        password,
+      const company = await Company.create({
+        ...req.body,
         verifyEmailToken,
         verifyTokenExpiration
       })
@@ -33,17 +39,18 @@ class AuthController {
       mail.subject = 'Verify your email'
       mail.templateName = 'verify-email'
       mail.templateVars = {
-        name: user.name,
-        email,
-        link: `http://localhost:3333/auth/verify_email/${user.id}/${verifyEmailToken}`
+        name: req.body.name,
+        email: req.body.email,
+        link: `http://localhost:3333/auth/verify_email/${company.id}/${verifyEmailToken}`
       }
       mail.sendMail()
       if (mail.error) {
         return res.status(500).json({ error: mail.error })
       }
-      user.password = undefined
 
-      return res.status(201).json({ user })
+      company.password = undefined
+
+      return res.status(201).json({ company })
     } catch (err) {
       if (err.name.includes('UniqueConstraint')) {
         return res.status(400).json({ error: 'This email is already in use!' })
@@ -53,38 +60,38 @@ class AuthController {
   }
 
   public async verifyEmail (req: Request, res: Response) {
-    const { userID, token } = req.params
+    const { companyID, token } = req.params
 
     try {
-      const user = await User.findByPk(userID)
+      const company = await Company.findByPk(companyID)
 
-      if (!user) {
-        return res.status(404).json({ error: 'This user does not exist!' })
+      if (!company) {
+        return res.status(404).json({ error: 'This company does not exist!' })
       }
 
-      if (!user.verifyEmailToken && !user.verifyTokenExpiration) {
-        user.password = undefined
-        return res.status(400).json({ user, error: 'This email is already verified!' })
+      if (!company.verifyEmailToken && !company.verifyTokenExpiration) {
+        company.password = undefined
+        return res.status(400).json({ company, error: 'This email is already verified!' })
       }
 
-      if (user.verifyEmailToken !== token) {
+      if (company.verifyEmailToken !== token) {
         return res.status(400).json({ error: 'Invalid token!' })
       }
 
       const now = new Date()
-      if (now > user.verifyTokenExpiration) {
+      if (now > company.verifyTokenExpiration) {
         return res.status(400).json({ error: 'Verify email token has expirated, register again and verify in time!' })
       }
 
-      user.verifyEmailToken = null
-      user.verifyTokenExpiration = null
-      await user.save()
+      company.verifyEmailToken = null
+      company.verifyTokenExpiration = null
+      await company.save()
 
-      user.password = undefined
+      const jwtoken = generateJwt({ companyID: company.id }, 86400)
 
-      const jwtoken = generateJwt({ userID: user.id }, 86400)
+      company.password = undefined
 
-      return res.status(200).json({ user, jwtoken, success: 'Email succesfully verified!' })
+      return res.status(200).json({ company, jwtoken, success: 'Email succesfully verified!' })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
@@ -98,31 +105,31 @@ class AuthController {
     }
 
     try {
-      const user = await User.findOne({
+      const company = await Company.findOne({
         where: {
           email
         }
       })
-      if (!user) {
+      if (!company) {
         return res
           .status(404)
-          .json({ error: 'This user does not exist, check your email field and try again!' })
+          .json({ error: 'This company does not exist, check your email field and try again!' })
       }
-
-      const matchPWD = await bcrypt.compare(password, user.password)
+      console.log(password + company.password)
+      const matchPWD = await bcrypt.compare(password, company.password)
       if (!matchPWD) {
         return res.status(400).json({ error: 'Wrong password!' })
       }
 
-      user.password = undefined
+      company.password = undefined
 
-      const token = generateJwt({ userID: user.id }, 86400)
+      const token = generateJwt({ companyID: company.id }, 86400)
 
-      return res.status(200).json({ user, token })
+      return res.status(200).json({ company, token })
     } catch (err) {
       return res
         .status(500)
-        .json({ error: 'This user does not exist, check your email field and try again!' })
+        .json({ error: 'This company does not exist, check your email field and try again!' })
     }
   }
 
@@ -130,14 +137,14 @@ class AuthController {
     const { email } = req.body
 
     try {
-      const user = await User.findOne({
+      const company = await Company.findOne({
         where: {
           email
         }
       })
 
-      if (!user) {
-        return res.status(404).json({ error: 'This user does not exist!' })
+      if (!company) {
+        return res.status(404).json({ error: 'This company does not exist!' })
       }
 
       const token = crypto.randomBytes(20).toString('hex')
@@ -145,17 +152,17 @@ class AuthController {
       const tokenExpiration = new Date()
       tokenExpiration.setHours(tokenExpiration.getHours() + 1)
 
-      user.passwordResetToken = token
-      user.resetTokenExpiration = tokenExpiration
-      await user.save()
+      company.passwordResetToken = token
+      company.resetTokenExpiration = tokenExpiration
+      await company.save()
 
       mail.to = 'nromario482@gmail.com'
       mail.subject = 'Reset your password'
       mail.templateName = 'reset-password'
       mail.templateVars = {
-        name: user.name,
+        name: company.name,
         email,
-        link: `http://localhost:3333/auth/reset_password/${user.passwordResetToken}`
+        link: `http://localhost:3333/auth/reset_password/${company.passwordResetToken}`
       }
       mail.sendMail()
       if (mail.error) {
@@ -164,7 +171,7 @@ class AuthController {
 
       return res
         .status(200)
-        .json({ success: 'Token to reset password was succesfully generated and the email was   xsent!' })
+        .json({ success: 'Token to reset password was succesfully generated and the email was sent!' })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
@@ -179,33 +186,33 @@ class AuthController {
     }
 
     try {
-      const user = await User.findOne({
+      const company = await Company.findOne({
         where: {
           email
         }
       })
 
-      if (!user) {
+      if (!company) {
         return res
           .status(404)
-          .json({ error: 'This user does not exist, check your email field and try again!' })
+          .json({ error: 'This company does not exist, check your email field and try again!' })
       }
 
-      if (token !== user.passwordResetToken) {
+      if (token !== company.passwordResetToken) {
         return res.status(400).json({ error: 'Invalid token!' })
       }
 
       const now = new Date()
-      if (now > user.resetTokenExpiration) {
+      if (now > company.resetTokenExpiration) {
         return res
           .status(400)
           .json({ error: 'Token expirated, generate a new token to try again!' })
       }
 
-      user.password = password
-      user.passwordResetToken = null
-      user.resetTokenExpiration = null
-      await user.save()
+      company.password = password
+      company.passwordResetToken = null
+      company.resetTokenExpiration = null
+      await company.save()
 
       return res.status(200).json({ success: 'Password succesfully changed!' })
     } catch (err) {
@@ -214,4 +221,4 @@ class AuthController {
   }
 }
 
-export default new AuthController()
+export default new CompaniesController()
