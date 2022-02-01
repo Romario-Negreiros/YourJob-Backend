@@ -3,7 +3,7 @@ import db from '../../database'
 import bcrypt from 'bcryptjs'
 
 class User extends Model {
-  public id!: string
+  public readonly id!: number
   public name!: string
   public email!: string
   public password!: string
