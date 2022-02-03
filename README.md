@@ -33,30 +33,14 @@ This is the backend for YourJob.com, built with nodejs, typescript and using exp
     - [x] Forgot password
     - [x] Reset password
 
-- [ ] Profile
+- [x] Company profile
 - [x] Create new vagancy
 - [x] Vagancies list
-- [ ] Companies list
-- [ ] Update profile
+- [x] Companies list
+- [x] Update profile
 - [ ] Manage vangacies
-- [ ] Unique vagancy
-- [ ] Unique company
-
-
-
-
-
-### Diagrams
-
-<p align="center">
-    <h2 align="center" >Database</h2>
-    <img width="200" src="./src/assets/diagrams/database.jpg" alt="Database diagram"></img>
-</p>
-<br />
-<p align="center">
-    <h2 align="center" >Routes</h2>
-    <img width="200" src="./src/assets/diagrams/routes.jpg" alt="Routes diagram"></img>
-</p>
+- [x] Unique vagancy
+- [x] Unique company
 
 ### How to contribute
 
