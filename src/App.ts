@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import db from './database'
 
-import { authRoutes, companiesRoutes } from './app/routes'
+import { authRoutes, companiesRoutes, mainRoutes } from './app/routes'
 
 class App {
   public express: express.Application
@@ -23,6 +23,7 @@ class App {
   private routes (): void {
     this.express.use('/auth', authRoutes)
     this.express.use('/companies', companiesRoutes)
+    this.express.use('/', mainRoutes)
   }
 
   private async database (): Promise<void> {
