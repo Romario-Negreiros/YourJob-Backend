@@ -115,6 +115,11 @@ class CompaniesAuthController {
           .status(404)
           .json({ error: 'This company does not exist, check your email field and try again!' })
       }
+
+      if (company.verifyEmailToken) {
+        return res.status(400).json({ error: 'This company has not verified its email yet!' })
+      }
+
       const matchPWD = await bcrypt.compare(password, company.password)
       if (!matchPWD) {
         return res.status(400).json({ error: 'Wrong password!' })

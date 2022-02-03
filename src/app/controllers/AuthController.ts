@@ -109,6 +109,10 @@ class AuthController {
           .json({ error: 'This user does not exist, check your email field and try again!' })
       }
 
+      if (user.verifyEmailToken) {
+        return res.status(400).json({ error: 'This user has not verified its email yet!' })
+      }
+
       const matchPWD = await bcrypt.compare(password, user.password)
       if (!matchPWD) {
         return res.status(400).json({ error: 'Wrong password!' })

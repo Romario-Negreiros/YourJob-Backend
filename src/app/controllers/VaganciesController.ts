@@ -5,7 +5,7 @@ import { Op, WhereOptions } from 'sequelize'
 
 class VaganciesController {
   public async register (req: Request, res: Response) {
-    const companyID = res.locals.id
+    const companyID = res.locals.decoded.id
     const nullField = checkFieldsNotNull(req.body)
     if (nullField) {
       return res.status(400).json({ error: nullField })
@@ -54,7 +54,7 @@ class VaganciesController {
         where: vagancyQueries,
         include: [
           {
-            association: 'company',
+            association: 'company:vagancies',
             attributes: {
               exclude: [
                 'password',
@@ -77,6 +77,37 @@ class VaganciesController {
       return res
         .status(500)
         .json({ error: 'Internal server error, please try again!' })
+    }
+  }
+
+  public async fetchOne (req: Request, res: Response) {
+    const { vagancyID } = req.params
+
+    try {
+      const vagancy = await Vagancy.findByPk(vagancyID, {
+        include: [
+          {
+            association: 'company:vagancies',
+            attributes: {
+              exclude: [
+                'password',
+                'passwordResetToken',
+                'resetTokenExpiration',
+                'verifyEmailToken',
+                'verifyTokenExpiration'
+              ]
+            }
+          }
+        ]
+      })
+
+      if (!vagancy) {
+        return res.status(404).json({ error: 'Vagancy not found!' })
+      }
+
+      return res.status(200).json({ vagancy })
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
   }
 }
