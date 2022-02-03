@@ -1,12 +1,16 @@
 import express from 'express'
-import { companiesController } from '../controllers'
+import { companiesAuthController, vaganciesController } from '../controllers'
+import { validateToken } from '../middlewares'
 
 const router = express.Router()
 
-router.post('/register', companiesController.register)
-router.get('/verify_email/:companyID/:token', companiesController.verifyEmail)
-router.post('/authenticate', companiesController.authenticate)
-router.post('/forgot_password', companiesController.forgotPassword)
-router.post('/reset_password/:token', companiesController.resetPassword)
+router.post('/register', companiesAuthController.register)
+router.get('/verify_email/:companyID/:token', companiesAuthController.verifyEmail)
+router.post('/authenticate', companiesAuthController.authenticate)
+router.post('/forgot_password', companiesAuthController.forgotPassword)
+router.post('/reset_password/:token', companiesAuthController.resetPassword)
+
+router.get('/home')
+router.post('/create_new_vagancy', validateToken, vaganciesController.register)
 
 export default router
