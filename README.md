@@ -33,12 +33,12 @@ This is the backend for YourJob.com, built with nodejs, typescript and using exp
     - [x] Forgot password
     - [x] Reset password
 
-- [ ] Home
 - [ ] Profile
-- [ ] Create new vagancy
-- [ ] Vagancies list
+- [x] Create new vagancy
+- [x] Vagancies list
 - [ ] Companies list
-- [ ] Update
+- [ ] Update profile
+- [ ] Manage vangacies
 - [ ] Unique vagancy
 - [ ] Unique company
 
