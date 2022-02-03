@@ -26,7 +26,7 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
       return res.status(401).json({ error: 'Invalid token!' })
     }
     res.locals = {
-      ...decoded
+      decoded
     }
   })
 
