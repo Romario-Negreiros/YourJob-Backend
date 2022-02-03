@@ -82,7 +82,7 @@ class AuthController {
 
       user.password = undefined
 
-      const jwtoken = generateJwt({ userID: user.id }, 86400)
+      const jwtoken = generateJwt({ id: user.id }, 86400)
 
       return res.status(200).json({ user, jwtoken, success: 'Email succesfully verified!' })
     } catch (err) {
@@ -116,7 +116,7 @@ class AuthController {
 
       user.password = undefined
 
-      const token = generateJwt({ userID: user.id }, 86400)
+      const token = generateJwt({ id: user.id }, 86400)
 
       return res.status(200).json({ user, token })
     } catch (err) {

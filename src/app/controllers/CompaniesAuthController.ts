@@ -9,7 +9,7 @@ import libphonenumber from 'google-libphonenumber'
 const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance()
 const mail = new Mail()
 
-class CompaniesController {
+class CompaniesAuthController {
   public async register (req: Request, res: Response) {
     const nullField = checkFieldsNotNull(req.body)
     if (nullField) {
@@ -87,7 +87,7 @@ class CompaniesController {
       company.verifyTokenExpiration = null
       await company.save()
 
-      const jwtoken = generateJwt({ companyID: company.id }, 86400)
+      const jwtoken = generateJwt({ id: company.id }, 86400)
 
       company.password = undefined
 
@@ -115,7 +115,6 @@ class CompaniesController {
           .status(404)
           .json({ error: 'This company does not exist, check your email field and try again!' })
       }
-      console.log(password + company.password)
       const matchPWD = await bcrypt.compare(password, company.password)
       if (!matchPWD) {
         return res.status(400).json({ error: 'Wrong password!' })
@@ -123,7 +122,7 @@ class CompaniesController {
 
       company.password = undefined
 
-      const token = generateJwt({ companyID: company.id }, 86400)
+      const token = generateJwt({ id: company.id }, 86400)
 
       return res.status(200).json({ company, token })
     } catch (err) {
@@ -221,4 +220,4 @@ class CompaniesController {
   }
 }
 
-export default new CompaniesController()
+export default new CompaniesAuthController()
