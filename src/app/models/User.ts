@@ -1,4 +1,5 @@
-import { Model, DataTypes } from 'sequelize'
+import { Model, DataTypes, BelongsToManyAddAssociationMixin, BelongsToManyRemoveAssociationMixin } from 'sequelize'
+import { Vagancy } from '.'
 import db from '../../database'
 import bcrypt from 'bcryptjs'
 
@@ -13,6 +14,9 @@ class User extends Model {
   public verifyTokenExpiration!: Date | null
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
+
+  public addSavedVagancies: BelongsToManyAddAssociationMixin<Vagancy, number>
+  public removeSavedVagancies: BelongsToManyRemoveAssociationMixin<Vagancy, number>
 }
 
 User.init(
