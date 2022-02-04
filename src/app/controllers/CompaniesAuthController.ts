@@ -80,6 +80,7 @@ class CompaniesAuthController {
 
       const now = new Date()
       if (now > company.verifyTokenExpiration) {
+        await company.destroy()
         return res.status(400).json({ error: 'Verify email token has expirated, register again and verify in time!' })
       }
 
@@ -91,7 +92,7 @@ class CompaniesAuthController {
 
       company.password = undefined
 
-      return res.status(200).json({ company, jwtoken, success: 'Email succesfully verified!' })
+      return res.status(200).json({ company, token: jwtoken, success: 'Email succesfully verified!' })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }

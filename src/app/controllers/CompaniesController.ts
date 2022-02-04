@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { Op, WhereOptions } from 'sequelize'
-import { Company } from '../models'
+import { Company, Avaliation } from '../models'
 import { checkFieldsNotNull } from '../../modules'
 
 class CompaniesController {
@@ -31,6 +31,9 @@ class CompaniesController {
         include: [
           {
             association: 'company:vagancies'
+          },
+          {
+            association: 'company:avaliations'
           }
         ]
       })
@@ -54,6 +57,9 @@ class CompaniesController {
         include: [
           {
             association: 'company:vagancies'
+          },
+          {
+            association: 'company:avaliations'
           }
         ]
       })
@@ -91,6 +97,28 @@ class CompaniesController {
       return res.status(200).json({ company })
     } catch (err) {
       return res.status(500).json({ err: err.message, error: 'Internal server error, please try again!' })
+    }
+  }
+
+  public async setAvaliation (req: Request, res: Response) {
+    const { companyID } = req.params
+    const nullField = checkFieldsNotNull(req.body)
+    if (nullField) {
+      return res.status(400).json({ error: nullField })
+    }
+
+    try {
+      const avaliation = await Avaliation.create({
+        companyID,
+        ...req.body
+      })
+
+      return res.status(201).json({ avaliation })
+    } catch (err) {
+      if (err.parent.code === '23502') {
+        return res.status(400).json({ error: `Missing ${err.parent.column} field!` })
+      }
+      return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
   }
 }

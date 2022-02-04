@@ -73,6 +73,7 @@ class AuthController {
 
       const now = new Date()
       if (now > user.verifyTokenExpiration) {
+        await user.destroy()
         return res.status(400).json({ error: 'Verify email token has expirated, register again and verify in time!' })
       }
 
@@ -84,7 +85,7 @@ class AuthController {
 
       const jwtoken = generateJwt({ id: user.id }, 86400)
 
-      return res.status(200).json({ user, jwtoken, success: 'Email succesfully verified!' })
+      return res.status(200).json({ user, token: jwtoken, success: 'Email succesfully verified!' })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
