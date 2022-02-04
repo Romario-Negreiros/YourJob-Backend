@@ -21,16 +21,16 @@ const validateToken = (req: Request, res: Response, next: NextFunction) => {
     return res.status(401).json({ error: 'Token malformatted!' })
   }
 
-  jwt.verify(token, authConfig.secret, (error, decoded) => {
+  return jwt.verify(token, authConfig.secret, (error, decoded) => {
     if (error) {
       return res.status(401).json({ error: 'Invalid token!' })
-    }
-    res.locals = {
-      decoded
+    } else {
+      res.locals = {
+        decoded
+      }
+      next()
     }
   })
-
-  return next()
 }
 
 export default validateToken
