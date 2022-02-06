@@ -34,13 +34,18 @@ This is the backend for YourJob.com, built with nodejs, typescript and using exp
     - [x] Reset password
 
 - [x] Company profile
+- [x] User profile
 - [x] Create new vagancy
 - [x] Vagancies list
 - [x] Companies list
-- [x] Update profile
-- [ ] Manage vangacies
+- [x] Users list
+- [x] Manage user and company profile
+- [x] Manage vangacies
 - [x] Unique vagancy
 - [x] Unique company
+- [x] Save vagancies
+- [x] Avaliations
+- [x] Unique user
 
 ### How to contribute
 
