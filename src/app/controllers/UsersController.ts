@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { Op, WhereOptions } from 'sequelize'
 import { checkFieldsNotNull } from '../../modules'
 import { User } from '../models'
 
@@ -83,6 +84,35 @@ class UsersController {
       await user.destroy()
 
       return res.status(200).json({ error: 'User succesfully deleted!' })
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error please try again!' })
+    }
+  }
+
+  public async list (req: Request, res: Response) {
+    const userQueries: WhereOptions = {}
+    const { workingArea, age } = req.query
+    if (workingArea) {
+      userQueries.workingArea = workingArea
+    }
+    if (age) {
+      const [min, max] = String(age).split('/')
+      userQueries.age = {
+        [Op.between]: [Number(min), Number(max)]
+      }
+    }
+
+    try {
+      const users = await User.findAll({
+        where: userQueries,
+        attributes: {
+          exclude: [
+            'password'
+          ]
+        }
+      })
+
+      return res.status(200).json({ users })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error please try again!' })
     }
