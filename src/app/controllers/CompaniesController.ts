@@ -75,7 +75,12 @@ class CompaniesController {
   }
 
   public async update (req: Request, res: Response) {
-    const companyID = res.locals.decoded.id
+    const { companyID } = req.params
+    const authenticatedCompanyID = res.locals.decoded.id
+
+    if (Number(companyID) !== authenticatedCompanyID) {
+      return res.status(403).json({ error: 'You do not have authorization to access this area!' })
+    }
 
     const nullField = checkFieldsNotNull(req.body)
     if (nullField) {
@@ -93,10 +98,34 @@ class CompaniesController {
         company[field] = req.body[field]
       }
 
-      await company.save()
+      await company.save({ hooks: false })
+
       return res.status(200).json({ company })
     } catch (err) {
-      return res.status(500).json({ err: err.message, error: 'Internal server error, please try again!' })
+      return res.status(500).json({ error: 'Internal server error, please try again!' })
+    }
+  }
+
+  public async delete (req: Request, res: Response) {
+    const { companyID } = req.params
+    const authenticatedCompanyID = res.locals.decoded.id
+
+    if (Number(companyID) !== authenticatedCompanyID) {
+      return res.status(403).json({ error: 'You do not have authorization to access this area!' })
+    }
+
+    try {
+      const company = await Company.findByPk(companyID)
+
+      if (!company) {
+        return res.status(404).json({ error: 'Company not found!' })
+      }
+
+      await company.destroy()
+
+      return res.status(200).json({ success: 'Company succesfully deleted!' })
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
   }
 

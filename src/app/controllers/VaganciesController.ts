@@ -179,17 +179,18 @@ class VaganciesController {
   }
 
   public async update (req: Request, res: Response) {
-    const nullField = checkFieldsNotNull(req.body)
-    if (nullField) {
-      return res.status(400).json({ error: nullField })
-    }
-
     const { companyID, vagancyID } = req.params
     const authenticatedCompanyID = res.locals.decoded.id
 
     if (Number(companyID) !== authenticatedCompanyID) {
       return res.status(403).json({ error: 'You do not have authorization to access this area!' })
     }
+
+    const nullField = checkFieldsNotNull(req.body)
+    if (nullField) {
+      return res.status(400).json({ error: nullField })
+    }
+
     try {
       if (!await Company.findByPk(companyID)) {
         return res.status(404).json({ error: 'Company not found!' })

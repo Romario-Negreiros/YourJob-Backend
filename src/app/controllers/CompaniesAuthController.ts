@@ -86,11 +86,12 @@ class CompaniesAuthController {
 
       company.verifyEmailToken = null
       company.verifyTokenExpiration = null
-      await company.save()
 
-      const jwtoken = generateJwt({ id: company.id }, 86400)
+      await company.save({ hooks: false })
 
       company.password = undefined
+
+      const jwtoken = generateJwt({ id: company.id }, 86400)
 
       return res.status(200).json({ company, token: jwtoken, success: 'Email succesfully verified!' })
     } catch (err) {
@@ -99,7 +100,7 @@ class CompaniesAuthController {
   }
 
   public async authenticate (req: Request, res: Response) {
-    const { password, email } = req.body
+    const { email, password } = req.body
     const nullField = checkFieldsNotNull(req.body)
     if (nullField) {
       return res.status(400).json({ error: nullField })
@@ -159,7 +160,8 @@ class CompaniesAuthController {
 
       company.passwordResetToken = token
       company.resetTokenExpiration = tokenExpiration
-      await company.save()
+
+      await company.save({ hooks: false })
 
       mail.to = 'nromario482@gmail.com'
       mail.subject = 'Reset your password'
@@ -217,6 +219,7 @@ class CompaniesAuthController {
       company.password = password
       company.passwordResetToken = null
       company.resetTokenExpiration = null
+
       await company.save()
 
       return res.status(200).json({ success: 'Password succesfully changed!' })

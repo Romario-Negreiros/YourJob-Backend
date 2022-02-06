@@ -79,7 +79,8 @@ class AuthController {
 
       user.verifyEmailToken = null
       user.verifyTokenExpiration = null
-      await user.save()
+
+      await user.save({ hooks: false })
 
       user.password = undefined
 
@@ -152,7 +153,8 @@ class AuthController {
 
       user.passwordResetToken = token
       user.resetTokenExpiration = tokenExpiration
-      await user.save()
+
+      await user.save({ hooks: false })
 
       mail.to = 'nromario482@gmail.com'
       mail.subject = 'Reset your password'
@@ -210,6 +212,7 @@ class AuthController {
       user.password = password
       user.passwordResetToken = null
       user.resetTokenExpiration = null
+
       await user.save()
 
       return res.status(200).json({ success: 'Password succesfully changed!' })
