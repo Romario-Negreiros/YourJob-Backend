@@ -35,7 +35,7 @@ class CompaniesAuthController {
         verifyTokenExpiration
       })
 
-      mail.to = 'nromario482@gmail.com'
+      mail.to = req.body.email
       mail.subject = 'Verify your email'
       mail.templateName = 'verify-email'
       mail.templateVars = {

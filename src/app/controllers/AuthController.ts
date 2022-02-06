@@ -35,7 +35,7 @@ class AuthController {
         verifyTokenExpiration
       })
 
-      mail.to = 'nromario482@gmail.com'
+      mail.to = email
       mail.subject = 'Verify your email'
       mail.templateName = 'verify-email'
       mail.templateVars = {
