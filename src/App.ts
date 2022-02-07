@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import db from './database'
 
-import { authRoutes, companiesRoutes, mainRoutes } from './app/routes'
+import routes from './app/routes'
 
 class App {
   public express: express.Application
@@ -29,9 +29,7 @@ class App {
   }
 
   private routes (): void {
-    this.express.use('/auth', authRoutes)
-    this.express.use('/companies', companiesRoutes)
-    this.express.use('/', mainRoutes)
+    this.express.use('/api', routes)
   }
 }
 
