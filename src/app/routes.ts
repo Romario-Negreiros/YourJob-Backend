@@ -4,8 +4,6 @@ import { validateToken } from './middlewares'
 
 const router = express.Router()
 
-// All routes are prefixed with /api/
-
 // Register
 router.post('/users/register', authController.register)
 router.post('/companies/register', companiesAuthController.register)

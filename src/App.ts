@@ -29,7 +29,7 @@ class App {
   }
 
   private routes (): void {
-    this.express.use('/api', routes)
+    this.express.use(routes)
   }
 }
 
