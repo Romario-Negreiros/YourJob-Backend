@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon src/server.ts",
-    "start": "node dist/src/server.js",
+    "start": "node dist/server.js",
     "build": "sucrase ./src -d ./dist --transforms typescript,imports",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
