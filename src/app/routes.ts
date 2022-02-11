@@ -4,7 +4,6 @@ import { validateToken } from './middlewares'
 
 const router = express.Router()
 
-router.get('/', (req, res) => res.send('API running!'))
 // Register
 router.post('/users/register', authController.register)
 router.post('/companies/register', companiesAuthController.register)
