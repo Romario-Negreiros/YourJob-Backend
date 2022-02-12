@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
-import dotEnv from 'dotenv'
-dotEnv.config()
+import dotenv from 'dotenv'
+dotenv.config()
 
 const validateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization
