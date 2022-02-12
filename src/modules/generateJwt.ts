@@ -1,8 +1,9 @@
 import jwt from 'jsonwebtoken'
-import jwtConfig from '../config/jwt.json'
+import dotEnv from 'dotenv'
+dotEnv.config()
 
 const generateJwt = (payload: Object, expirationTime: number): string => {
-  return jwt.sign(payload, jwtConfig.secret, {
+  return jwt.sign(payload, process.env.AUTH_SECRET, {
     expiresIn: expirationTime
   })
 }
