@@ -1,5 +1,5 @@
 import app from './App'
-import dotEnv from 'dotEnv'
-dotEnv.config()
+import dotenv from 'dotEnv'
+dotenv.config()
 
 app.listen(process.env.PORT || 3333, () => console.log('Server is running'))
