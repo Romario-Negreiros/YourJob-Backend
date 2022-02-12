@@ -19,7 +19,7 @@ class App {
     try {
       await db.sync()
     } catch (err) {
-      console.log(`Connection to postgreSQL failed: ${err.message}`)
+      console.log(`Connection to postgreSQL failed: ${err}`)
     }
   }
 
