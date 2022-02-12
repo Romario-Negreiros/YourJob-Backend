@@ -3,19 +3,16 @@ import dbConfig from '../config/db'
 import dotEnv from 'dotenv'
 dotEnv.config()
 
-const db = new Sequelize(
-  process.env.DATABASE_URL
-    ? (process.env.DATABASE_URL,
-      {
-        dialect: 'postgres',
-        dialectOptions: {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false
-          }
-        }
-      })
-    : dbConfig
-)
+const db = process.env.DATABASE_URL
+  ? new Sequelize(process.env.DATABASE_URL, {
+    dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    }
+  })
+  : new Sequelize(dbConfig)
 
 export default db
