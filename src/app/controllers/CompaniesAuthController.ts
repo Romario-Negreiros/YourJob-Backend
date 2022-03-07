@@ -16,7 +16,7 @@ class CompaniesAuthController {
       return res.status(400).json({ error: nullField })
     }
     const isPhoneNumberValid = phoneUtil.isValidNumberForRegion(
-      phoneUtil.parse(req.body.phoneNumber, req.body.alpha2Code),
+      phoneUtil.parse(req.body.contactNumber, req.body.alpha2Code),
       req.body.alpha2Code
     )
     if (!isPhoneNumberValid) {

@@ -6,14 +6,11 @@ import { checkFieldsNotNull } from '../../modules'
 class CompaniesController {
   public async list (req: Request, res: Response) {
     const companiesQueries: WhereOptions = {}
-    const { name, region } = req.query
+    const { name } = req.query
     if (name) {
       companiesQueries.name = {
         [Op.iLike]: `${name}%`
       }
-    }
-    if (region) {
-      companiesQueries.region = region
     }
 
     try {
