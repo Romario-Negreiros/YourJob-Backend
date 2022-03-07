@@ -8,11 +8,10 @@ class Company extends Model {
   public email!: string
   public password!: string
   public description!: string
-  public phoneNumber!: string
+  public contactNumber!: string
   public alpha2Code!: string
-  public region!: string
-  public companyLink!: string
-  public pictureURL!: string | null
+  public website!: string
+  public logoURL!: string | null
   public verifyEmailToken!: string | null
   public verifyTokenExpiration!: Date | null
   public passwordResetToken!: string | null
@@ -26,11 +25,10 @@ Company.init({
   email: DataTypes.STRING,
   password: DataTypes.STRING,
   description: DataTypes.STRING,
-  phoneNumber: DataTypes.STRING,
+  contactNumber: DataTypes.STRING,
   alpha2Code: DataTypes.STRING,
-  region: DataTypes.STRING,
-  companyLink: DataTypes.STRING,
-  pictureURL: DataTypes.STRING,
+  website: DataTypes.STRING,
+  logoURL: DataTypes.STRING,
   verifyEmailToken: DataTypes.STRING,
   verifyTokenExpiration: DataTypes.DATE,
   passwordResetToken: DataTypes.STRING,
