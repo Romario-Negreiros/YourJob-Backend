@@ -24,6 +24,9 @@ class CompaniesAuthController {
     }
 
     try {
+      if (await Company.findOne({ where: { email: req.body.email } })) {
+        return res.status(400).json({ error: 'This email is already in use!' })
+      }
       const verifyEmailToken = crypto.randomBytes(20).toString('hex')
 
       const verifyTokenExpiration = new Date()
@@ -52,9 +55,6 @@ class CompaniesAuthController {
 
       return res.status(201).json({ company })
     } catch (err) {
-      if (err.name.includes('UniqueConstraint')) {
-        return res.status(400).json({ error: 'This email is already in use!' })
-      }
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
   }
