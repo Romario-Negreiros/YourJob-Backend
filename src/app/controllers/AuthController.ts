@@ -41,7 +41,7 @@ class AuthController {
       mail.templateVars = {
         name: user.name,
         email,
-        link: `http://localhost:3333/auth/verify_email/${user.id}/${verifyEmailToken}`
+        link: `https://yourjob-api.herokuapp.com/users/verify_email/${user.id}/${verifyEmailToken}`
       }
       mail.sendMail()
       if (mail.error) {
@@ -70,7 +70,9 @@ class AuthController {
 
       if (!user.verifyEmailToken && !user.verifyTokenExpiration) {
         user.password = undefined
-        return res.status(400).json({ user, error: 'This email is already verified!' })
+        const jwtoken = generateJwt({ id: user.id }, 86400)
+
+        return res.status(200).json({ user, token: jwtoken, success: 'Email succesfully verified!' })
       }
 
       if (user.verifyEmailToken !== token) {
@@ -80,7 +82,9 @@ class AuthController {
       const now = new Date()
       if (now > user.verifyTokenExpiration) {
         await user.destroy()
-        return res.status(400).json({ error: 'Verify email token has expirated, register again and verify in time!' })
+        return res
+          .status(400)
+          .json({ error: 'Verify email token has expirated, register again and verify in time!' })
       }
 
       user.verifyEmailToken = null
@@ -175,9 +179,9 @@ class AuthController {
         return res.status(500).json({ error: mail.error })
       }
 
-      return res
-        .status(200)
-        .json({ success: 'Token to reset password was succesfully generated and the email was   xsent!' })
+      return res.status(200).json({
+        success: 'Token to reset password was succesfully generated and the email was   xsent!'
+      })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
