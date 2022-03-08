@@ -41,7 +41,7 @@ class Mail {
       }
       this.transporter.sendMail(mailOptions, err => {
         if (err) {
-          this.error = 'Error on sending email to user!'
+          this.error = 'Error on sending email!'
         }
       })
     }
@@ -51,7 +51,6 @@ class Mail {
     return nodemailer.createTransport(smtpTransport({
       service: config.service,
       host: config.host,
-      port: config.port,
       secure: false,
       auth: {
         user: config.user,
