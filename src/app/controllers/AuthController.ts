@@ -172,7 +172,7 @@ class AuthController {
       mail.templateVars = {
         name: user.name,
         email,
-        link: `http://localhost:3333/auth/reset_password/${user.passwordResetToken}`
+        link: `https://yourjob-api.herokuapp.com/users/reset_password/${user.passwordResetToken}`
       }
       mail.sendMail()
       if (mail.error) {
