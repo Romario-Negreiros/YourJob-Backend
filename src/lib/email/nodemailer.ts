@@ -50,8 +50,6 @@ class Mail {
   private configureTransporter () {
     return nodemailer.createTransport(smtpTransport({
       service: config.service,
-      host: config.host,
-      secure: false,
       auth: {
         user: config.user,
         pass: config.password
