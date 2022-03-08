@@ -41,7 +41,7 @@ class CompaniesAuthController {
       mail.templateVars = {
         name: req.body.name,
         email: req.body.email,
-        link: `https://yourjob-api.herokuapp.com/companies/verify_email/${company.id}/${verifyEmailToken}`
+        link: `http://localhost:3000/${company.id}/${verifyEmailToken}/companies`
       }
       mail.sendMail()
       if (mail.error) {
@@ -169,7 +169,7 @@ class CompaniesAuthController {
       mail.templateVars = {
         name: company.name,
         email,
-        link: `https://yourjob-api.herokuapp.com/companies/reset_password/${company.passwordResetToken}`
+        link: `http://localhost:3000/reset_password/${company.passwordResetToken}/companies`
       }
       mail.sendMail()
       if (mail.error) {
