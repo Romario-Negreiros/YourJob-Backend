@@ -53,7 +53,7 @@ class CompaniesAuthController {
 
       company.password = undefined
 
-      return res.status(201).json({ company })
+      return res.status(201).send()
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
