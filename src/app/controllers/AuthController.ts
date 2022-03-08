@@ -47,6 +47,7 @@ class AuthController {
       if (mail.error) {
         return res.status(500).json({ error: mail.error })
       }
+
       user.password = undefined
 
       return res.status(201).json({ user })
