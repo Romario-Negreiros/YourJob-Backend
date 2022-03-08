@@ -23,7 +23,7 @@ class AuthController {
     }
 
     try {
-      if (await User.findOne({ where: email })) {
+      if (await User.findOne({ where: { email } })) {
         return res.status(400).json({ error: 'This email is already in use!' })
       }
       const verifyEmailToken = crypto.randomBytes(20).toString('hex')
