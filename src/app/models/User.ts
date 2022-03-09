@@ -9,8 +9,8 @@ class User extends Model {
   public email!: string
   public password!: string
   public bio!: string
-  public pictureURL!: string | null
-  public curriculumURL!: string | null
+  public profilePicture!: string | null
+  public curriculum!: string | null
   public workingArea!: string
   public age!: number
   public passwordResetToken!: string | null
@@ -30,8 +30,8 @@ User.init(
     email: DataTypes.STRING,
     password: DataTypes.STRING,
     bio: DataTypes.STRING,
-    pictureURL: DataTypes.STRING,
-    curriculumURL: DataTypes.STRING,
+    profilePicture: DataTypes.STRING,
+    curriculum: DataTypes.STRING,
     workingArea: DataTypes.STRING,
     age: DataTypes.INTEGER,
     passwordResetToken: DataTypes.STRING,

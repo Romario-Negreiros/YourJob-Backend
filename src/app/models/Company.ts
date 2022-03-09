@@ -12,7 +12,7 @@ class Company extends Model {
   public contactNumber!: string
   public alpha2Code!: string
   public website!: string
-  public logoURL!: string | null
+  public companyLogo!: string | null
   public verifyEmailToken!: string | null
   public verifyTokenExpiration!: Date | null
   public passwordResetToken!: string | null
@@ -30,7 +30,7 @@ Company.init({
   contactNumber: DataTypes.STRING,
   alpha2Code: DataTypes.STRING,
   website: DataTypes.STRING,
-  logoURL: DataTypes.STRING,
+  companyLogo: DataTypes.STRING,
   verifyEmailToken: DataTypes.STRING,
   verifyTokenExpiration: DataTypes.DATE,
   passwordResetToken: DataTypes.STRING,
