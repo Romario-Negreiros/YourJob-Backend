@@ -41,7 +41,7 @@ class Mail {
       }
       this.transporter.sendMail(mailOptions, err => {
         if (err) {
-          this.error = 'Error on sending email!'
+          this.error = 'Error while sending email!'
         }
       })
     }
