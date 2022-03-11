@@ -57,6 +57,7 @@ class CompaniesAuthController {
       }
       mail.sendMail()
       if (mail.error) {
+        await company.destroy()
         return res.status(500).json({ error: mail.error })
       }
 

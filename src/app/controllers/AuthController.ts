@@ -48,6 +48,7 @@ class AuthController {
       }
       mail.sendMail()
       if (mail.error) {
+        await user.destroy()
         return res.status(500).json({ error: mail.error })
       }
 
