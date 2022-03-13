@@ -18,15 +18,13 @@ class CompaniesAuthController {
       description: req.body.description,
       country: req.body.country,
       website: req.body.website,
-      contactNumber: req.body.contactNumber,
-      alpha2Code: req.body.alpha2Code
+      contactNumber: req.body.contactNumber
     })
     if (nullField) {
       return res.status(400).json({ error: nullField })
     }
-    const isPhoneNumberValid = phoneUtil.isValidNumberForRegion(
-      phoneUtil.parse(req.body.contactNumber, req.body.alpha2Code),
-      req.body.alpha2Code
+    const isPhoneNumberValid = phoneUtil.isValidNumber(
+      phoneUtil.parse(req.body.contactNumber)
     )
     if (!isPhoneNumberValid) {
       return res.status(400).json({ error: 'Invalid phone number!' })
