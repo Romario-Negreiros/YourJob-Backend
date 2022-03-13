@@ -18,13 +18,15 @@ class CompaniesAuthController {
       description: req.body.description,
       country: req.body.country,
       website: req.body.website,
-      contactNumber: req.body.contactNumber
+      contactNumber: req.body.contactNumber,
+      alpha2Code: req.body.alpha2Code
     })
     if (nullField) {
       return res.status(400).json({ error: nullField })
     }
-    const isPhoneNumberValid = phoneUtil.isValidNumber(
-      phoneUtil.parse(req.body.contactNumber)
+    const isPhoneNumberValid = phoneUtil.isValidNumberForRegion(
+      phoneUtil.parse(req.body.contactNumber, req.body.alpha2Code),
+      req.body.alpha2Code
     )
     if (!isPhoneNumberValid) {
       return res.status(400).json({ error: 'Invalid phone number!' })
@@ -61,7 +63,7 @@ class CompaniesAuthController {
 
       company.password = undefined
 
-      return res.status(201).send()
+      return res.status(201).json({ company })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
@@ -89,7 +91,9 @@ class CompaniesAuthController {
       const now = new Date()
       if (now > company.verifyTokenExpiration) {
         await company.destroy()
-        return res.status(400).json({ error: 'Verify email token has expirated, register again and verify in time!' })
+        return res
+          .status(400)
+          .json({ error: 'Verify email token has expirated, register again and verify in time!' })
       }
 
       company.verifyEmailToken = null
@@ -101,7 +105,9 @@ class CompaniesAuthController {
 
       const jwtoken = generateJwt({ id: company.id }, 86400)
 
-      return res.status(200).json({ company, token: jwtoken, success: 'Email succesfully verified!' })
+      return res
+        .status(200)
+        .json({ company, token: jwtoken, success: 'Email succesfully verified!' })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
@@ -186,7 +192,9 @@ class CompaniesAuthController {
 
       return res
         .status(200)
-        .json({ success: 'Token to reset password was succesfully generated and the email was sent!' })
+        .json({
+          success: 'Token to reset password was succesfully generated and the email was sent!'
+        })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }

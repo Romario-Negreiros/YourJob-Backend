@@ -54,7 +54,7 @@ class AuthController {
 
       user.password = undefined
 
-      return res.status(201).send()
+      return res.status(201).json({ user })
     } catch (err) {
       return res.status(500).json({ error: err.message })
     }
