@@ -10,6 +10,7 @@ class Company extends Model {
   public description!: string
   public country!: string
   public contactNumber!: string
+  public alpha2Code!: string
   public website!: string
   public companyLogo!: string | null
   public verifyEmailToken!: string | null
@@ -27,6 +28,7 @@ Company.init({
   description: DataTypes.STRING,
   country: DataTypes.STRING,
   contactNumber: DataTypes.STRING,
+  alpha2Code: DataTypes.STRING,
   website: DataTypes.STRING,
   companyLogo: DataTypes.STRING,
   verifyEmailToken: DataTypes.STRING,
