@@ -4,6 +4,10 @@ import db from './database'
 
 import routes from './app/routes'
 
+const corsOptions: cors.CorsOptions = {
+  origin: 'http://localhost:3000'
+}
+
 class App {
   public express: express.Application
 
@@ -25,7 +29,7 @@ class App {
 
   private middlewares (): void {
     this.express.use(express.json())
-    this.express.use(cors())
+    this.express.use(cors(corsOptions))
   }
 
   private routes (): void {
