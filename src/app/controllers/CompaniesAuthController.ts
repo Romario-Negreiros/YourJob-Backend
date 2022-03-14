@@ -65,7 +65,7 @@ class CompaniesAuthController {
 
       return res.status(201).json({ company })
     } catch (err) {
-      return res.status(500).json({ error: 'Internal server error, please try again!' })
+      return res.status(500).json({ error: err.message })
     }
   }
 
