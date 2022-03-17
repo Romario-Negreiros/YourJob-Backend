@@ -42,11 +42,11 @@ class AuthController {
       mail.subject = 'Verify your email'
       mail.templateName = 'verify-email'
       mail.templateVars = {
-        name: user.name,
+        name,
         email,
         link: `http://localhost:3000/verify_email/${user.id}/${verifyEmailToken}/users`
       }
-      mail.sendMail()
+      await mail.sendMail()
       if (mail.error) {
         await user.destroy()
         return res.status(500).json({ error: mail.error })

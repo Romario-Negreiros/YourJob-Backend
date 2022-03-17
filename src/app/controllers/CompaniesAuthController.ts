@@ -55,7 +55,7 @@ class CompaniesAuthController {
         email: req.body.email,
         link: `http://localhost:3000/${company.id}/${verifyEmailToken}/companies`
       }
-      mail.sendMail()
+      await mail.sendMail()
       if (mail.error) {
         await company.destroy()
         return res.status(500).json({ error: mail.error })
@@ -177,7 +177,7 @@ class CompaniesAuthController {
 
       await company.save({ hooks: false })
 
-      mail.to = 'nromario482@gmail.com'
+      mail.to = email
       mail.subject = 'Reset your password'
       mail.templateName = 'reset-password'
       mail.templateVars = {

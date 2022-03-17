@@ -1,6 +1,4 @@
-import nodemailer from 'nodemailer'
-import config from '../../config/transporter'
-import smtpTransport from 'nodemailer-smtp-transport'
+import createTransporter from '../../config/transporter'
 import fs from 'fs'
 import ejs from 'ejs'
 import { htmlToText } from 'html-to-text'
@@ -20,42 +18,33 @@ class Mail {
   public templateName!: string
   public templateVars!: TemplateVars
   public error!: string | null
-  private transporter!: nodemailer.Transporter
 
   constructor () {
-    this.transporter = this.configureTransporter()
     this.error = null
   }
 
-  public sendMail () {
+  public sendMail = async () => {
     const templatePath = `src/lib/email/templates/${this.templateName}.html`
     if (this.templateName && fs.existsSync(templatePath)) {
       const template = fs.readFileSync(templatePath, 'utf-8')
       this.html = juice(ejs.render(template, this.templateVars))
       this.text = htmlToText(this.html)
       const mailOptions = {
-        from: config.user,
+        from: process.env.EMAIL,
         to: this.to,
         subject: this.subject,
         html: this.html
       }
-      this.transporter.sendMail(mailOptions, err => {
+      const transporter = await createTransporter()
+      transporter.sendMail(mailOptions, (err) => {
         if (err) {
           this.error = err.message
+          if (!this.error) {
+            this.error = 'Error on sending email... Username and pwd'
+          }
         }
       })
     }
-  }
-
-  private configureTransporter () {
-    return nodemailer.createTransport(smtpTransport({
-      service: config.service,
-      auth: {
-        user: config.user,
-        pass: config.password
-      },
-      tls: { rejectUnauthorized: false }
-    }))
   }
 }
 
