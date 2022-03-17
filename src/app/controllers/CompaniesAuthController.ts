@@ -3,7 +3,7 @@ import { Company } from '../models'
 import { checkFieldsNotNull, generateJwt } from '../../modules'
 import crypto from 'crypto'
 import bcrypt from 'bcryptjs'
-import Mail from '../../lib/email/nodemailer'
+import Mail from '../../lib/mailgun'
 import libphonenumber from 'google-libphonenumber'
 
 const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance()
@@ -55,7 +55,7 @@ class CompaniesAuthController {
         email: req.body.email,
         link: `http://localhost:3000/${company.id}/${verifyEmailToken}/companies`
       }
-      await mail.sendMail()
+      await mail.send()
       if (mail.error) {
         await company.destroy()
         return res.status(500).json({ error: mail.error })
@@ -185,7 +185,7 @@ class CompaniesAuthController {
         email,
         link: `http://localhost:3000/reset_password/${company.passwordResetToken}/companies`
       }
-      mail.sendMail()
+      mail.send()
       if (mail.error) {
         return res.status(500).json({ error: mail.error })
       }

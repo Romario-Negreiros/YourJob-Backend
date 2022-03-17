@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { User } from '../models'
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
-import Mail from '../../lib/email/nodemailer'
+import Mail from '../../lib/mailgun'
 import { generateJwt, checkFieldsNotNull } from '../../modules'
 
 const mail = new Mail()
@@ -46,7 +46,7 @@ class AuthController {
         email,
         link: `http://localhost:3000/verify_email/${user.id}/${verifyEmailToken}/users`
       }
-      await mail.sendMail()
+      await mail.send()
       if (mail.error) {
         await user.destroy()
         return res.status(500).json({ error: mail.error })
@@ -168,7 +168,7 @@ class AuthController {
 
       await user.save({ hooks: false })
 
-      mail.to = 'nromario482@gmail.com'
+      mail.to = email
       mail.subject = 'Reset your password'
       mail.templateName = 'reset-password'
       mail.templateVars = {
@@ -176,7 +176,7 @@ class AuthController {
         email,
         link: `http://localhost:3000/reset_password/${user.passwordResetToken}/users`
       }
-      mail.sendMail()
+      mail.send()
       if (mail.error) {
         return res.status(500).json({ error: mail.error })
       }
