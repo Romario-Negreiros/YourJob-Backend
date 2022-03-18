@@ -44,7 +44,7 @@ class AuthController {
       mail.templateVars = {
         name,
         email,
-        link: `http://localhost:3000/verify_email/${user.id}/${verifyEmailToken}/users`
+        link: `http://yourjob.vercel.app/verify_email/${user.id}/${verifyEmailToken}/users`
       }
       await mail.send()
       if (mail.error) {
@@ -174,7 +174,7 @@ class AuthController {
       mail.templateVars = {
         name: user.name,
         email,
-        link: `http://localhost:3000/reset_password/${user.passwordResetToken}/users`
+        link: `http://yourjob.vercel.app/reset_password/${user.passwordResetToken}/users`
       }
       mail.send()
       if (mail.error) {
