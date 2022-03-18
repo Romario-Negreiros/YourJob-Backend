@@ -71,10 +71,7 @@ class AuthController {
       }
 
       if (!user.verifyEmailToken && !user.verifyTokenExpiration) {
-        user.password = undefined
-        const jwtoken = generateJwt({ id: user.id }, 86400)
-
-        return res.status(200).json({ user, token: jwtoken, success: 'Email succesfully verified!' })
+        return res.status(400).json({ error: 'This email has already been verified!' })
       }
 
       if (user.verifyEmailToken !== token) {
@@ -94,11 +91,7 @@ class AuthController {
 
       await user.save({ hooks: false })
 
-      user.password = undefined
-
-      const jwtoken = generateJwt({ id: user.id }, 86400)
-
-      return res.status(200).json({ user, token: jwtoken, success: 'Email succesfully verified!' })
+      return res.status(200).json({ success: 'Email succesfully verified!' })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }

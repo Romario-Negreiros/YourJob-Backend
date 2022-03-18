@@ -80,8 +80,7 @@ class CompaniesAuthController {
       }
 
       if (!company.verifyEmailToken && !company.verifyTokenExpiration) {
-        company.password = undefined
-        return res.status(400).json({ company, error: 'This email is already verified!' })
+        return res.status(400).json({ error: 'This email has already been verified!' })
       }
 
       if (company.verifyEmailToken !== token) {
@@ -101,13 +100,9 @@ class CompaniesAuthController {
 
       await company.save({ hooks: false })
 
-      company.password = undefined
-
-      const jwtoken = generateJwt({ id: company.id }, 86400)
-
       return res
         .status(200)
-        .json({ company, token: jwtoken, success: 'Email succesfully verified!' })
+        .json({ success: 'Email succesfully verified!' })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
