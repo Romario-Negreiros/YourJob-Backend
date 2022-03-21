@@ -44,7 +44,7 @@ class AuthController {
       mail.templateVars = {
         name,
         email,
-        link: `http://localhost:30000/verify_email/${user.id}/${verifyEmailToken}/users`
+        link: `http://localhost:3000/verify_email/${user.id}/${verifyEmailToken}/users`
       }
       await mail.send()
       if (mail.error) {
