@@ -6,6 +6,7 @@ This is the backend for YourJob.com, built with nodejs, typescript and using exp
 
 ### Libraries in use
 
+- Sequelize
 - Bcryptjs
 - Cors
 - Dotenv
@@ -14,8 +15,7 @@ This is the backend for YourJob.com, built with nodejs, typescript and using exp
 - Html-to-text
 - Jsonwebtoken
 - Juice
-- Nodemailer
-- Sequelize
+- Mailgun
 
 ### Progress
 
