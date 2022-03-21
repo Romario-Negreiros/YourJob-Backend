@@ -53,7 +53,7 @@ class CompaniesAuthController {
       mail.templateVars = {
         name: req.body.name,
         email: req.body.email,
-        link: `http://yourjob.vercel.app/${company.id}/${verifyEmailToken}/companies`
+        link: `http://localhost:3000/${company.id}/${verifyEmailToken}/companies`
       }
       await mail.send()
       if (mail.error) {
