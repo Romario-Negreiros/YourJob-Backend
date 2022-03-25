@@ -11,16 +11,7 @@ const mail = new Mail()
 
 class CompaniesAuthController {
   public async register (req: Request, res: Response) {
-    const nullField = checkFieldsNotNull({
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-      description: req.body.description,
-      country: req.body.country,
-      website: req.body.website,
-      contactNumber: req.body.contactNumber,
-      alpha2Code: req.body.alpha2Code
-    })
+    const nullField = checkFieldsNotNull(req.body)
     if (nullField) {
       return res.status(400).json({ error: nullField })
     }
@@ -198,7 +189,7 @@ class CompaniesAuthController {
   public async resetPassword (req: Request, res: Response) {
     const { token } = req.params
     const { password, email } = req.body
-    const nullField = checkFieldsNotNull([password, email])
+    const nullField = checkFieldsNotNull(req.body)
     if (nullField) {
       return res.status(400).json({ error: nullField })
     }

@@ -9,21 +9,13 @@ const mail = new Mail()
 
 class AuthController {
   public async register (req: Request, res: Response) {
-    const { password, email, name, bio, workingArea, age } = req.body
-    const nullField = checkFieldsNotNull({
-      password,
-      email,
-      name,
-      bio,
-      workingArea,
-      age
-    })
+    const nullField = checkFieldsNotNull(req.body)
     if (nullField) {
       return res.status(400).json({ error: nullField })
     }
 
     try {
-      if (await User.findOne({ where: { email } })) {
+      if (await User.findOne({ where: { email: req.body.email } })) {
         return res.status(400).json({ error: 'This email is already in use!' })
       }
       const verifyEmailToken = crypto.randomBytes(20).toString('hex')
@@ -38,12 +30,12 @@ class AuthController {
         verifyTokenExpiration
       })
 
-      mail.to = email
+      mail.to = req.body.email
       mail.subject = 'Verify your email'
       mail.templateName = 'verify-email'
       mail.templateVars = {
-        name,
-        email,
+        name: req.body.name,
+        email: req.body.email,
         link: `http://localhost:3000/verify_email/${user.id}/${verifyEmailToken}/users`
       }
       await mail.send()
@@ -185,7 +177,7 @@ class AuthController {
   public async resetPassword (req: Request, res: Response) {
     const { token } = req.params
     const { password, email } = req.body
-    const nullField = checkFieldsNotNull([password, email])
+    const nullField = checkFieldsNotNull(req.body)
     if (nullField) {
       return res.status(400).json({ error: nullField })
     }
