@@ -2,6 +2,9 @@ import { Request, Response } from 'express'
 import { Op, WhereOptions } from 'sequelize'
 import { Company, Avaliation } from '../models'
 import { checkFieldsNotNull } from '../../modules'
+import libphonenumber from 'google-libphonenumber'
+
+const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance()
 
 class CompaniesController {
   public async list (req: Request, res: Response) {
@@ -89,6 +92,14 @@ class CompaniesController {
 
       if (!company) {
         return res.status(404).json({ error: 'Company not found!' })
+      }
+
+      const isPhoneNumberValid = phoneUtil.isValidNumberForRegion(
+        phoneUtil.parse(req.body.contactNumber, company.alpha2Code),
+        company.alpha2Code
+      )
+      if (!isPhoneNumberValid) {
+        return res.status(400).json({ error: 'Invalid phone number!' })
       }
 
       for (const field in req.body) {
