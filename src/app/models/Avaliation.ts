@@ -2,8 +2,8 @@ import { Model, DataTypes } from 'sequelize'
 import db from '../../database'
 
 class Avaliation extends Model {
-  public readonly id!: string
-  public companyID!: string
+  public readonly id!: number
+  public readonly companyID!: number
   public recommendation!: string
   public comment!: string
   public grade!: number

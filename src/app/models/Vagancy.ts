@@ -2,8 +2,8 @@ import { Model, DataTypes } from 'sequelize'
 import db from '../../database'
 
 class Vagancy extends Model {
-  public readonly id!: string
-  public companyID!: string
+  public readonly id!: number
+  public readonly companyID!: number
   public description!: string
   public salary!: number
   public category!: string
