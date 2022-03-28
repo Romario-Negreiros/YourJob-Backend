@@ -107,9 +107,21 @@ class UsersController {
         where: userQueries,
         attributes: {
           exclude: [
-            'password'
+            'password',
+            'passwordResetToken',
+            'resetTokenExpiration',
+            'verifyEmailToken',
+            'verifyTokenExpiration'
           ]
-        }
+        },
+        include: [
+          {
+            association: 'savedVagancies',
+            through: {
+              attributes: []
+            }
+          }
+        ]
       })
 
       return res.status(200).json({ users })

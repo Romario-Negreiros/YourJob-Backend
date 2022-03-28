@@ -186,7 +186,15 @@ class AuthController {
       const user = await User.findOne({
         where: {
           email
-        }
+        },
+        include: [
+          {
+            association: 'savedVagancies',
+            through: {
+              attributes: []
+            }
+          }
+        ]
       })
 
       if (!user) {

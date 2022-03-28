@@ -110,7 +110,15 @@ class CompaniesAuthController {
       const company = await Company.findOne({
         where: {
           email
-        }
+        },
+        include: [
+          {
+            association: 'company:vagancies'
+          },
+          {
+            association: 'company:avaliations'
+          }
+        ]
       })
       if (!company) {
         return res
