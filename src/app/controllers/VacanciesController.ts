@@ -77,7 +77,7 @@ class VacanciesController {
       }
       return res
         .status(500)
-        .json({ error: 'Internal server error, please try again!' })
+        .json({ error: err.message })
     }
   }
 
