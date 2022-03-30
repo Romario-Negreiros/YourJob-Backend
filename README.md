@@ -35,15 +35,15 @@ This is the backend for YourJob.com, built with nodejs, typescript and using exp
 
 - [x] Company profile
 - [x] User profile
-- [x] Create new vagancy
-- [x] Vagancies list
+- [x] Create new vacancy
+- [x] Vacancies list
 - [x] Companies list
 - [x] Users list
 - [x] Manage user and company profile
 - [x] Manage vangacies
-- [x] Unique vagancy
+- [x] Unique vacancy
 - [x] Unique company
-- [x] Save vagancies
+- [x] Save vacancies
 - [x] Avaliations
 - [x] Unique user
 

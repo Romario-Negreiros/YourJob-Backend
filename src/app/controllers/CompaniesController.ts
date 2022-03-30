@@ -31,7 +31,7 @@ class CompaniesController {
         where: companiesQueries,
         include: [
           {
-            association: 'company:vagancies'
+            association: 'company:vacancies'
           },
           {
             association: 'company:avaliations'
@@ -57,7 +57,7 @@ class CompaniesController {
         },
         include: [
           {
-            association: 'company:vagancies'
+            association: 'company:vacancies'
           },
           {
             association: 'company:avaliations'

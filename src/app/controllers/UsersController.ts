@@ -16,7 +16,7 @@ class UsersController {
         },
         include: [
           {
-            association: 'savedVagancies',
+            association: 'savedVacancies',
             through: {
               attributes: []
             }
@@ -117,7 +117,7 @@ class UsersController {
         },
         include: [
           {
-            association: 'savedVagancies',
+            association: 'savedVacancies',
             through: {
               attributes: []
             }

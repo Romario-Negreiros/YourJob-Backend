@@ -1,9 +1,9 @@
 import { Request, Response } from 'express'
 import { checkFieldsNotNull } from '../../modules'
-import { Company, Vagancy, User } from '../models'
+import { Company, Vacancy, User } from '../models'
 import { Op, WhereOptions } from 'sequelize'
 
-class VaganciesController {
+class VacanciesController {
   public async register (req: Request, res: Response) {
     const companyID = res.locals.decoded.id
     const nullField = checkFieldsNotNull(req.body)
@@ -18,12 +18,12 @@ class VaganciesController {
         return res.status(404).json({ error: 'Company not found!' })
       }
 
-      const vagancy = await Vagancy.create({
+      const vacancy = await Vacancy.create({
         ...req.body,
         companyID
       })
 
-      return res.status(201).json({ vagancy })
+      return res.status(201).json({ vacancy })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
@@ -31,31 +31,31 @@ class VaganciesController {
 
   public async list (req: Request, res: Response) {
     const companyQueries: WhereOptions = {}
-    const vagancyQueries: WhereOptions = {}
+    const vacancyQueries: WhereOptions = {}
     const { limit, region, category, position, salary } = req.query
     if (region) {
       companyQueries.region = region
     }
     if (category) {
-      vagancyQueries.category = category
+      vacancyQueries.category = category
     }
     if (position) {
-      vagancyQueries.position = position
+      vacancyQueries.position = position
     }
     if (salary) {
       const [min, max] = String(salary).split('/')
-      vagancyQueries.salary = {
+      vacancyQueries.salary = {
         [Op.between]: [Number(min), Number(max)]
       }
     }
 
     try {
-      const vagancies = await Vagancy.findAll({
+      const vacancies = await Vacancy.findAll({
         limit: Number(limit),
-        where: vagancyQueries,
+        where: vacancyQueries,
         include: [
           {
-            association: 'company:vagancies',
+            association: 'company:vacancies',
             attributes: {
               exclude: [
                 'password',
@@ -70,7 +70,7 @@ class VaganciesController {
         ]
       })
 
-      return res.status(200).json({ vagancies })
+      return res.status(200).json({ vacancies })
     } catch (err) {
       if (err.parent.code === '42703') {
         return res.status(500).json({ error: 'Invalid query string!' })
@@ -82,13 +82,13 @@ class VaganciesController {
   }
 
   public async fetchOne (req: Request, res: Response) {
-    const { vagancyID } = req.params
+    const { vacancyID } = req.params
 
     try {
-      const vagancy = await Vagancy.findByPk(vagancyID, {
+      const vacancy = await Vacancy.findByPk(vacancyID, {
         include: [
           {
-            association: 'company:vagancies',
+            association: 'company:vacancies',
             attributes: {
               exclude: [
                 'password',
@@ -102,19 +102,19 @@ class VaganciesController {
         ]
       })
 
-      if (!vagancy) {
-        return res.status(404).json({ error: 'Vagancy not found!' })
+      if (!vacancy) {
+        return res.status(404).json({ error: 'Vacancy not found!' })
       }
 
-      return res.status(200).json({ vagancy })
+      return res.status(200).json({ vacancy })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
   }
 
-  public async saveVagancy (req: Request, res: Response) {
+  public async saveVacancy (req: Request, res: Response) {
     const userID = res.locals.decoded.id
-    const { vagancyID } = req.params
+    const { vacancyID } = req.params
 
     try {
       const user = await User.findByPk(userID)
@@ -123,22 +123,22 @@ class VaganciesController {
         return res.status(404).json({ error: 'User not found!' })
       }
 
-      const vagancy = await Vagancy.findByPk(vagancyID)
+      const vacancy = await Vacancy.findByPk(vacancyID)
 
-      if (!vagancy) {
-        return res.status(404).json({ error: 'Vagancy not found!' })
+      if (!vacancy) {
+        return res.status(404).json({ error: 'Vacancy not found!' })
       }
 
-      await user.addSavedVagancies(vagancy)
+      await user.addSavedVacancies(vacancy)
 
-      return res.status(200).json({ success: 'Vagancy saved!' })
+      return res.status(200).json({ success: 'Vacancy saved!' })
     } catch (err) {
       return res.status(500).json({ err: err.message, error: 'Internal server error, please try again!' })
     }
   }
 
   public async delete (req: Request, res: Response) {
-    const { companyID, vagancyID } = req.params
+    const { companyID, vacancyID } = req.params
     const authenticatedCompanyID = res.locals.decoded.id
 
     if (Number(companyID) !== authenticatedCompanyID) {
@@ -149,13 +149,13 @@ class VaganciesController {
         return res.status(404).json({ error: 'Company not found!' })
       }
 
-      const vagancy = await Vagancy.findByPk(vagancyID)
+      const vacancy = await Vacancy.findByPk(vacancyID)
 
-      if (!vagancy) {
-        return res.status(404).json({ error: 'Vagancy not found!' })
+      if (!vacancy) {
+        return res.status(404).json({ error: 'Vacancy not found!' })
       }
 
-      await vagancy.destroy()
+      await vacancy.destroy()
 
       const company = await Company.findByPk(companyID, {
         attributes: {
@@ -165,7 +165,7 @@ class VaganciesController {
         },
         include: [
           {
-            association: 'company:vagancies'
+            association: 'company:vacancies'
           },
           {
             association: 'company:avaliations'
@@ -180,7 +180,7 @@ class VaganciesController {
   }
 
   public async update (req: Request, res: Response) {
-    const { companyID, vagancyID } = req.params
+    const { companyID, vacancyID } = req.params
     const authenticatedCompanyID = res.locals.decoded.id
 
     if (Number(companyID) !== authenticatedCompanyID) {
@@ -197,17 +197,17 @@ class VaganciesController {
         return res.status(404).json({ error: 'Company not found!' })
       }
 
-      const vagancy = await Vagancy.findByPk(vagancyID)
+      const vacancy = await Vacancy.findByPk(vacancyID)
 
-      if (!vagancy) {
-        return res.status(404).json({ error: 'Vagancy not found!' })
+      if (!vacancy) {
+        return res.status(404).json({ error: 'Vacancy not found!' })
       }
 
       for (const field in req.body) {
-        vagancy[field] = req.body[field]
+        vacancy[field] = req.body[field]
       }
 
-      await vagancy.save()
+      await vacancy.save()
 
       const company = await Company.findByPk(companyID, {
         attributes: {
@@ -217,7 +217,7 @@ class VaganciesController {
         },
         include: [
           {
-            association: 'company:vagancies'
+            association: 'company:vacancies'
           },
           {
             association: 'company:avaliations'
@@ -232,4 +232,4 @@ class VaganciesController {
   }
 }
 
-export default new VaganciesController()
+export default new VacanciesController()

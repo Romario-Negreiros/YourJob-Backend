@@ -1,5 +1,5 @@
 export { default as authController } from './AuthController'
 export { default as companiesAuthController } from './CompaniesAuthController'
-export { default as vaganciesController } from './VaganciesController'
+export { default as vacanciesController } from './VacanciesController'
 export { default as companiesController } from './CompaniesController'
 export { default as usersController } from './UsersController'

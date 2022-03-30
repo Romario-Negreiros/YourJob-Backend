@@ -1,5 +1,5 @@
 import express from 'express'
-import { companiesAuthController, authController, vaganciesController, usersController, companiesController } from './controllers'
+import { companiesAuthController, authController, vacanciesController, usersController, companiesController } from './controllers'
 import { validateToken } from './middlewares'
 
 const router = express.Router()
@@ -19,26 +19,26 @@ router.post('/companies/forgot_password', companiesAuthController.forgotPassword
 // Reset password
 router.put('/users/reset_password/:token', authController.resetPassword)
 router.put('/companies/reset_password/:token', companiesAuthController.resetPassword)
-// Create vagancy
-router.post('/create_new_vagancy', validateToken, vaganciesController.register)
+// Create vacancy
+router.post('/create_new_vacancy', validateToken, vacanciesController.register)
 // Show unique
 router.get('/users/profile/:userID', usersController.fetchOne)
 router.get('/companies/profile/:companyID', companiesController.fetchOne)
-router.get('/vagancies/:vagancyID', vaganciesController.fetchOne)
+router.get('/vacancies/:vacancyID', vacanciesController.fetchOne)
 // Lists
 router.get('/users', usersController.list)
 router.get('/companies', companiesController.list)
-router.get('/vagancies', vaganciesController.list)
+router.get('/vacancies', vacanciesController.list)
 // Updates
 router.put('/users/profile/:userID/update', validateToken, usersController.update)
 router.put('/companies/profile/:companyID/update', validateToken, companiesController.update)
-router.put('/vagancies/:vagancyID/update', validateToken, vaganciesController.update)
+router.put('/vacancies/:vacancyID/update', validateToken, vacanciesController.update)
 // Deletes
 router.delete('/users/profile/:userID/delete', validateToken, usersController.delete)
 router.delete('/companies/profile/:companyID/delete', validateToken, companiesController.delete)
-router.delete('/vagancies/:vagancyID/delete', validateToken, vaganciesController.delete)
-// Save vagancy
-router.post('/vagancies/:vagancyID/saveVagancy', validateToken, vaganciesController.saveVagancy)
+router.delete('/vacancies/:vacancyID/delete', validateToken, vacanciesController.delete)
+// Save vacancy
+router.post('/vacancies/:vacancyID/saveVacancy', validateToken, vacanciesController.saveVacancy)
 // Set avaliation
 router.post('/avaliations/:companyID/create', validateToken, companiesController.setAvaliation)
 

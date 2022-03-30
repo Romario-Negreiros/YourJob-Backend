@@ -2,7 +2,7 @@
 
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('user-vagancies', {
+    await queryInterface.createTable('user-vacancies', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -15,7 +15,7 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      vagancyID: {
+      vacancyID: {
         type: Sequelize.INTEGER,
         allowNull: false,
         onUpdate: 'CASCADE',
@@ -33,6 +33,6 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('user-vagancies')
+    await queryInterface.dropTable('user-vacancies')
   }
 }

@@ -189,7 +189,7 @@ class AuthController {
         },
         include: [
           {
-            association: 'savedVagancies',
+            association: 'savedVacancies',
             through: {
               attributes: []
             }

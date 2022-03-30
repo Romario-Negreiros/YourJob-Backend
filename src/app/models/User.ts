@@ -1,5 +1,5 @@
 import { Model, DataTypes, BelongsToManyAddAssociationMixin, BelongsToManyRemoveAssociationMixin } from 'sequelize'
-import { Vagancy } from '.'
+import { Vacancy } from '.'
 import db from '../../database'
 import bcrypt from 'bcryptjs'
 
@@ -20,8 +20,8 @@ class User extends Model {
   public readonly createdAt!: Date
   public readonly updatedAt!: Date
 
-  public addSavedVagancies: BelongsToManyAddAssociationMixin<Vagancy, number>
-  public removeSavedVagancies: BelongsToManyRemoveAssociationMixin<Vagancy, number>
+  public addSavedVacancies: BelongsToManyAddAssociationMixin<Vacancy, number>
+  public removeSavedVacancies: BelongsToManyRemoveAssociationMixin<Vacancy, number>
 }
 
 User.init(

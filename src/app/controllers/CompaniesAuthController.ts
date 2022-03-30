@@ -113,7 +113,7 @@ class CompaniesAuthController {
         },
         include: [
           {
-            association: 'company:vagancies'
+            association: 'company:vacancies'
           },
           {
             association: 'company:avaliations'
