@@ -72,13 +72,12 @@ class VacanciesController {
 
       return res.status(200).json({ vacancies })
     } catch (err) {
-      console.log(err)
       if (err.parent.code === '42703') {
         return res.status(500).json({ error: 'Invalid query string!' })
       }
       return res
         .status(500)
-        .json({ error: err.message + ' ok' })
+        .json({ error: 'Internal server error!' })
     }
   }
 
