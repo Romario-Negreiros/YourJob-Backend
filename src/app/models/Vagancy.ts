@@ -5,7 +5,7 @@ class Vagancy extends Model {
   public readonly id!: number
   public readonly companyID!: number
   public description!: string
-  public salary!: string
+  public salary!: number
   public category!: string
   public position!: string
   public readonly createdAt: Date
@@ -14,7 +14,7 @@ class Vagancy extends Model {
 
 Vagancy.init({
   description: DataTypes.STRING,
-  salary: DataTypes.STRING,
+  salary: DataTypes.INTEGER,
   category: DataTypes.STRING,
   position: DataTypes.STRING
 }, {

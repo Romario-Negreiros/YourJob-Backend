@@ -11,7 +11,7 @@ module.exports = {
   async down (queryInterface, Sequelize) {
     await queryInterface.removeColumn('vagancies', 'salary')
     await queryInterface.addColumn('vagancies', 'salary', Sequelize.INTEGER, {
-      allowNull: true
+      allowNull: false
     })
   }
 }
