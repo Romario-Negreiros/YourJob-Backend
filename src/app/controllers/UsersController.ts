@@ -91,7 +91,7 @@ class UsersController {
 
   public async list (req: Request, res: Response) {
     const userQueries: WhereOptions = {}
-    const { workingArea, age } = req.query
+    const { limit, workingArea, age } = req.query
     if (workingArea) {
       userQueries.workingArea = workingArea
     }
@@ -104,6 +104,7 @@ class UsersController {
 
     try {
       const users = await User.findAll({
+        limit: Number(limit),
         where: userQueries,
         attributes: {
           exclude: [

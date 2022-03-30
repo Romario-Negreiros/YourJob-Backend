@@ -32,7 +32,7 @@ class VaganciesController {
   public async list (req: Request, res: Response) {
     const companyQueries: WhereOptions = {}
     const vagancyQueries: WhereOptions = {}
-    const { region, category, position, salary } = req.query
+    const { limit, region, category, position, salary } = req.query
     if (region) {
       companyQueries.region = region
     }
@@ -51,6 +51,7 @@ class VaganciesController {
 
     try {
       const vagancies = await Vagancy.findAll({
+        limit: Number(limit),
         where: vagancyQueries,
         include: [
           {
