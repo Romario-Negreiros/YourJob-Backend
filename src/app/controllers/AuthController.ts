@@ -106,7 +106,12 @@ class AuthController {
             association: 'savedVacancies',
             through: {
               attributes: []
-            }
+            },
+            include: [
+              {
+                association: 'company:vacancies'
+              }
+            ]
           }
         ]
       })
@@ -133,7 +138,7 @@ class AuthController {
     } catch (err) {
       return res
         .status(500)
-        .json({ error: 'This user does not exist, check your email field and try again!' })
+        .json({ error: 'Internal server error, please try again!' })
     }
   }
 
@@ -200,7 +205,12 @@ class AuthController {
             association: 'savedVacancies',
             through: {
               attributes: []
-            }
+            },
+            include: [
+              {
+                association: 'company:vacancies'
+              }
+            ]
           }
         ]
       })
