@@ -100,7 +100,15 @@ class AuthController {
       const user = await User.findOne({
         where: {
           email
-        }
+        },
+        include: [
+          {
+            association: 'savedVacancies',
+            through: {
+              attributes: []
+            }
+          }
+        ]
       })
       if (!user) {
         return res
@@ -167,7 +175,7 @@ class AuthController {
       }
 
       return res.status(200).json({
-        success: 'Token to reset password was succesfully generated and the email was   xsent!'
+        success: 'Token to reset password was succesfully generated and the email was sent!'
       })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })

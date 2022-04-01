@@ -11,7 +11,11 @@ class UsersController {
       const user = await User.findByPk(userID, {
         attributes: {
           exclude: [
-            'password'
+            'password',
+            'passwordResetToken',
+            'resetTokenExpiration',
+            'verifyEmailToken',
+            'verifyTokenExpiration'
           ]
         },
         include: [
@@ -48,7 +52,25 @@ class UsersController {
     }
 
     try {
-      const user = await User.findByPk(userID)
+      const user = await User.findByPk(userID, {
+        attributes: {
+          exclude: [
+            'password',
+            'passwordResetToken',
+            'resetTokenExpiration',
+            'verifyEmailToken',
+            'verifyTokenExpiration'
+          ]
+        },
+        include: [
+          {
+            association: 'savedVacancies',
+            through: {
+              attributes: []
+            }
+          }
+        ]
+      })
 
       if (!user) {
         return res.status(404).json({ error: 'User not found!' })
