@@ -133,7 +133,32 @@ class VacanciesController {
 
       return res.status(200).json({ success: 'Vacancy saved!' })
     } catch (err) {
-      return res.status(500).json({ err: err.message, error: 'Internal server error, please try again!' })
+      return res.status(500).json({ error: 'Internal server error, please try again!' })
+    }
+  }
+
+  public async removeSavedVacancy (req: Request, res: Response) {
+    const userID = res.locals.decoded.id
+    const { vacancyID } = req.params
+
+    try {
+      const user = await User.findByPk(userID)
+
+      if (!user) {
+        return res.status(404).json({ error: 'User not found!' })
+      }
+
+      const vacancy = await Vacancy.findByPk(vacancyID)
+
+      if (!vacancy) {
+        return res.status(404).json({ error: 'Vacancy not found!' })
+      }
+
+      await user.removeSavedVacancies(vacancy)
+
+      return res.status(200).json({ success: 'Removed saved vacancy!' })
+    } catch (err) {
+      return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
   }
 
