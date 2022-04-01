@@ -44,7 +44,7 @@ class CompaniesAuthController {
       mail.templateVars = {
         name: req.body.name,
         email: req.body.email,
-        link: `http://localhost:3000/${company.id}/${verifyEmailToken}/companies`
+        link: `http://localhost:3000/verify_email/${company.id}/${verifyEmailToken}/companies`
       }
       await mail.send()
       if (mail.error) {
@@ -177,7 +177,7 @@ class CompaniesAuthController {
       mail.templateVars = {
         name: company.name,
         email,
-        link: `http://yourjob.vercel.app/reset_password/${company.passwordResetToken}/companies`
+        link: `http://localhost:3000/reset_password/${company.passwordResetToken}/companies`
       }
       mail.send()
       if (mail.error) {
