@@ -9,16 +9,19 @@ const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance()
 class CompaniesController {
   public async list (req: Request, res: Response) {
     const companiesQueries: WhereOptions = {}
-    const { limit, name } = req.query
+    const { name, country } = req.query
     if (name) {
       companiesQueries.name = {
         [Op.iLike]: `${name}%`
       }
     }
+    if (country) {
+      companiesQueries.country = country
+    }
 
     try {
       const companies = await Company.findAll({
-        limit: Number(limit),
+        limit: 20,
         attributes: {
           exclude: [
             'password',

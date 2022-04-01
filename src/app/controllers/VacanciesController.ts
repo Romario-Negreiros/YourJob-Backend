@@ -32,9 +32,9 @@ class VacanciesController {
   public async list (req: Request, res: Response) {
     const companyQueries: WhereOptions = {}
     const vacancyQueries: WhereOptions = {}
-    const { region, category, position, salary } = req.query
-    if (region) {
-      companyQueries.region = region
+    const { country, category, position, salary } = req.query
+    if (country) {
+      companyQueries.country = country
     }
     if (category) {
       vacancyQueries.category = category
