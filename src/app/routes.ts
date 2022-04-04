@@ -40,7 +40,7 @@ router.delete('/vacancies/:vacancyID/delete', validateToken, vacanciesController
 // Save vacancy
 router.post('/vacancies/:vacancyID/saveVacancy', validateToken, vacanciesController.saveVacancy)
 // Remove saved vacancy
-router.delete('/vacancies:vacancyID/removeSavedVacancy', validateToken, vacanciesController.removeSavedVacancy)
+router.delete('/vacancies/:vacancyID/removeSavedVacancy', validateToken, vacanciesController.removeSavedVacancy)
 // Set avaliation
 router.post('/avaliations/:companyID/create', validateToken, companiesController.setAvaliation)
 
