@@ -163,21 +163,18 @@ class VacanciesController {
   }
 
   public async delete (req: Request, res: Response) {
-    const { companyID, vacancyID } = req.params
-    const authenticatedCompanyID = res.locals.decoded.id
+    const { vacancyID } = req.params
+    const companyID = res.locals.decoded.id
 
-    if (Number(companyID) !== authenticatedCompanyID) {
-      return res.status(403).json({ error: 'You do not have authorization to access this area!' })
-    }
     try {
-      if (!await Company.findByPk(companyID)) {
-        return res.status(404).json({ error: 'Company not found!' })
-      }
-
       const vacancy = await Vacancy.findByPk(vacancyID)
 
       if (!vacancy) {
         return res.status(404).json({ error: 'Vacancy not found!' })
+      }
+
+      if (vacancy.companyID !== companyID) {
+        return res.status(403).json({ error: 'You do not have authorization to access this area!' })
       }
 
       await vacancy.destroy()
@@ -205,12 +202,8 @@ class VacanciesController {
   }
 
   public async update (req: Request, res: Response) {
-    const { companyID, vacancyID } = req.params
-    const authenticatedCompanyID = res.locals.decoded.id
-
-    if (Number(companyID) !== authenticatedCompanyID) {
-      return res.status(403).json({ error: 'You do not have authorization to access this area!' })
-    }
+    const { vacancyID } = req.params
+    const companyID = res.locals.decoded.id
 
     const nullField = checkFieldsNotNull(req.body)
     if (nullField) {
@@ -218,14 +211,14 @@ class VacanciesController {
     }
 
     try {
-      if (!await Company.findByPk(companyID)) {
-        return res.status(404).json({ error: 'Company not found!' })
-      }
-
       const vacancy = await Vacancy.findByPk(vacancyID)
 
       if (!vacancy) {
         return res.status(404).json({ error: 'Vacancy not found!' })
+      }
+
+      if (vacancy.companyID !== companyID) {
+        return res.status(403).json({ error: 'You do not have authorization to access this area!' })
       }
 
       for (const field in req.body) {
