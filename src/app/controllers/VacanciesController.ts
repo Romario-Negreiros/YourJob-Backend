@@ -243,7 +243,7 @@ class VacanciesController {
         ]
       })
 
-      return res.status(200).json({ company })
+      return res.status(200).json({ company, vacancy })
     } catch (err) {
       return res.status(500).json({ error: 'Internal server error, please try again!' })
     }
