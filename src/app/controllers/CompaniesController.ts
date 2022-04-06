@@ -16,7 +16,9 @@ class CompaniesController {
       }
     }
     if (country) {
-      companiesQueries.country = country
+      companiesQueries.country = {
+        [Op.iLike]: `${country}%`
+      }
     }
 
     try {

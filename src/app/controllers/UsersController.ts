@@ -115,7 +115,9 @@ class UsersController {
     const userQueries: WhereOptions = {}
     const { workingArea, age } = req.query
     if (workingArea) {
-      userQueries.workingArea = workingArea
+      userQueries.workingArea = {
+        [Op.iLike]: `${workingArea}%`
+      }
     }
     if (age) {
       const [min, max] = String(age).split('/')

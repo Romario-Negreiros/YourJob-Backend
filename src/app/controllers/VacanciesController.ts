@@ -34,13 +34,19 @@ class VacanciesController {
     const vacancyQueries: WhereOptions = {}
     const { country, category, position, salary } = req.query
     if (country) {
-      companyQueries.country = country
+      companyQueries.country = {
+        [Op.iLike]: `${country}%`
+      }
     }
     if (category) {
-      vacancyQueries.category = category
+      vacancyQueries.category = {
+        [Op.iLike]: `${category}%`
+      }
     }
     if (position) {
-      vacancyQueries.position = position
+      vacancyQueries.position = {
+        [Op.iLike]: `${position}%`
+      }
     }
     if (salary) {
       const [min, max] = String(salary).split('/')
