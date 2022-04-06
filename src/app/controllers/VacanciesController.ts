@@ -135,7 +135,7 @@ class VacanciesController {
     }
   }
 
-  public async removeSavedVacancy(req: Request, res: Response) {
+  public async removeSavedVacancy (req: Request, res: Response) {
     const userID = res.locals.decoded.id
     const { vacancyID } = req.params
 
