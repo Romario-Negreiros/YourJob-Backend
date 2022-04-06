@@ -172,7 +172,7 @@ class AuthController {
       mail.templateVars = {
         name: user.name,
         email,
-        link: `http://localhost:3000/reset_password/${user.passwordResetToken}/users`
+        link: `http://localhost:3000/reset_password/${user.passwordResetToken}/users/${user.email}`
       }
       mail.send()
       if (mail.error) {

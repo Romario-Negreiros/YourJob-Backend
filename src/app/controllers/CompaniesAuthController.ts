@@ -177,7 +177,7 @@ class CompaniesAuthController {
       mail.templateVars = {
         name: company.name,
         email,
-        link: `http://localhost:3000/reset_password/${company.passwordResetToken}/companies`
+        link: `http://localhost:3000/reset_password/${company.passwordResetToken}/companies/${company.email}`
       }
       mail.send()
       if (mail.error) {
