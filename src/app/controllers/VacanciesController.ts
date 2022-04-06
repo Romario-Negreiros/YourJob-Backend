@@ -75,9 +75,7 @@ class VacanciesController {
       if (err.parent.code === '42703') {
         return res.status(500).json({ error: 'Invalid query string!' })
       }
-      return res
-        .status(500)
-        .json({ error: 'Internal server error!' })
+      return res.status(500).json({ error: 'Internal server error!' })
     }
   }
 
@@ -137,7 +135,7 @@ class VacanciesController {
     }
   }
 
-  public async removeSavedVacancy (req: Request, res: Response) {
+  public async removeSavedVacancy(req: Request, res: Response) {
     const userID = res.locals.decoded.id
     const { vacancyID } = req.params
 
@@ -181,9 +179,7 @@ class VacanciesController {
 
       const company = await Company.findByPk(companyID, {
         attributes: {
-          exclude: [
-            'password'
-          ]
+          exclude: ['password']
         },
         include: [
           {
@@ -197,7 +193,9 @@ class VacanciesController {
 
       return res.status(200).json({ company })
     } catch (err) {
-      return res.status(500).json({ err: err.message, error: 'Internal server error, please try again!' })
+      return res
+        .status(500)
+        .json({ err: err.message, error: 'Internal server error, please try again!' })
     }
   }
 
@@ -211,7 +209,22 @@ class VacanciesController {
     }
 
     try {
-      const vacancy = await Vacancy.findByPk(vacancyID)
+      const vacancy = await Vacancy.findByPk(vacancyID, {
+        include: [
+          {
+            association: 'company:vacancies',
+            attributes: {
+              exclude: [
+                'password',
+                'passwordResetToken',
+                'resetTokenExpiration',
+                'verifyEmailToken',
+                'verifyTokenExpiration'
+              ]
+            }
+          }
+        ]
+      })
 
       if (!vacancy) {
         return res.status(404).json({ error: 'Vacancy not found!' })
@@ -229,9 +242,7 @@ class VacanciesController {
 
       const company = await Company.findByPk(companyID, {
         attributes: {
-          exclude: [
-            'password'
-          ]
+          exclude: ['password']
         },
         include: [
           {
