@@ -10,6 +10,27 @@ const phoneUtil = libphonenumber.PhoneNumberUtil.getInstance()
 const mail = new Mail()
 
 class CompaniesAuthController {
+  public async authenticateWithJwt (req: Request, res: Response) {
+    const id = res.locals.decoded.id
+
+    try {
+      const company = await Company.findByPk(id, {
+        include: [
+          {
+            association: 'company:vacancies'
+          },
+          {
+            association: 'company:avaliations'
+          }
+        ]
+      })
+
+      res.status(200).json({ company })
+    } catch (err) {
+      res.status(500).json({ error: 'Internal server error!' })
+    }
+  }
+
   public async register (req: Request, res: Response) {
     const nullField = checkFieldsNotNull(req.body)
     if (nullField) {

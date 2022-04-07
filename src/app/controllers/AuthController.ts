@@ -8,6 +8,32 @@ import { generateJwt, checkFieldsNotNull } from '../../modules'
 const mail = new Mail()
 
 class AuthController {
+  public async authenticateWithJwt (req: Request, res: Response) {
+    const id = res.locals.decoded.id
+
+    try {
+      const user = await User.findByPk(id, {
+        include: [
+          {
+            association: 'savedVacancies',
+            through: {
+              attributes: []
+            },
+            include: [
+              {
+                association: 'company:vacancies'
+              }
+            ]
+          }
+        ]
+      })
+
+      res.status(200).json({ user })
+    } catch (err) {
+      res.status(500).json({ error: 'Internal server error!' })
+    }
+  }
+
   public async register (req: Request, res: Response) {
     const nullField = checkFieldsNotNull(req.body)
     if (nullField) {
