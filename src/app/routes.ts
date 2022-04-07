@@ -10,6 +10,8 @@ router.post('/companies/register', companiesAuthController.register)
 // Authenticate
 router.post('/users/authenticate', authController.authenticate)
 router.post('/companies/authenticate', companiesAuthController.authenticate)
+router.post('/users/authenticate/jwt', validateToken, authController.authenticateWithJwt)
+router.post('/companies/authenticate/jwt', validateToken, companiesAuthController.authenticateWithJwt)
 // Verify email
 router.get('/users/verify_email/:userID/:token', authController.verifyEmail)
 router.get('/companies/verify_email/:companyID/:token', companiesAuthController.verifyEmail)
