@@ -65,7 +65,7 @@ class CompaniesAuthController {
       mail.templateVars = {
         name: req.body.name,
         email: req.body.email,
-        link: `http://localhost:3000/verify_email/${company.id}/${verifyEmailToken}/companies`
+        link: `https://yourjob.vercel.app/verify_email/${company.id}/${verifyEmailToken}/companies`
       }
       await mail.send()
       if (mail.error) {
@@ -73,9 +73,7 @@ class CompaniesAuthController {
         return res.status(500).json({ error: mail.error })
       }
 
-      company.password = undefined
-
-      return res.status(201).json({ company })
+      return res.status(201).json({ company, password: undefined })
     } catch (err) {
       return res.status(500).json({ error: err.message })
     }
@@ -91,7 +89,7 @@ class CompaniesAuthController {
         return res.status(404).json({ error: 'This company does not exist!' })
       }
 
-      if (!company.verifyEmailToken && !company.verifyTokenExpiration) {
+      if (!company.verifyEmailToken || !company.verifyTokenExpiration) {
         return res.status(400).json({ error: 'This email has already been verified!' })
       }
 
@@ -156,11 +154,9 @@ class CompaniesAuthController {
         return res.status(400).json({ error: 'Wrong password!' })
       }
 
-      company.password = undefined
-
       const token = generateJwt({ id: company.id }, 86400)
 
-      return res.status(200).json({ company, token })
+      return res.status(200).json({ company, token, password: undefined })
     } catch (err) {
       return res
         .status(500)
@@ -198,7 +194,7 @@ class CompaniesAuthController {
       mail.templateVars = {
         name: company.name,
         email,
-        link: `http://localhost:3000/reset_password/${company.passwordResetToken}/companies/${company.email}`
+        link: `https://yourjob.vercel.app/reset_password/${company.passwordResetToken}/companies/${company.email}`
       }
       mail.send()
       if (mail.error) {
@@ -234,6 +230,10 @@ class CompaniesAuthController {
         return res
           .status(404)
           .json({ error: 'This company does not exist, check your email field and try again!' })
+      }
+
+      if (!company.passwordResetToken || !company.resetTokenExpiration) {
+        return res.status(404).json({ error: 'Password reset token not found, please generate a new one!' })
       }
 
       if (token !== company.passwordResetToken) {

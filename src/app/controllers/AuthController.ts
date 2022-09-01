@@ -62,7 +62,7 @@ class AuthController {
       mail.templateVars = {
         name: req.body.name,
         email: req.body.email,
-        link: `http://localhost:3000/verify_email/${user.id}/${verifyEmailToken}/users`
+        link: `https://yourjob.vercel.app/verify_email/${user.id}/${verifyEmailToken}/users`
       }
       await mail.send()
       if (mail.error) {
@@ -70,9 +70,7 @@ class AuthController {
         return res.status(500).json({ error: mail.error })
       }
 
-      user.password = undefined
-
-      return res.status(201).json({ user })
+      return res.status(201).json({ user, password: undefined })
     } catch (err) {
       return res.status(500).json({ error: err.message })
     }
@@ -88,7 +86,7 @@ class AuthController {
         return res.status(404).json({ error: 'This user does not exist!' })
       }
 
-      if (!user.verifyEmailToken && !user.verifyTokenExpiration) {
+      if (!user.verifyEmailToken || !user.verifyTokenExpiration) {
         return res.status(400).json({ error: 'This email has already been verified!' })
       }
 
@@ -156,11 +154,9 @@ class AuthController {
         return res.status(400).json({ error: 'Wrong password!' })
       }
 
-      user.password = undefined
-
       const token = generateJwt({ id: user.id }, 86400)
 
-      return res.status(200).json({ user, token })
+      return res.status(200).json({ user, token, password: undefined })
     } catch (err) {
       return res
         .status(500)
@@ -198,7 +194,7 @@ class AuthController {
       mail.templateVars = {
         name: user.name,
         email,
-        link: `http://localhost:3000/reset_password/${user.passwordResetToken}/users/${user.email}`
+        link: `https://yourjob.vercel.app/reset_password/${user.passwordResetToken}/users/${user.email}`
       }
       mail.send()
       if (mail.error) {
@@ -245,6 +241,10 @@ class AuthController {
         return res
           .status(404)
           .json({ error: 'This user does not exist, check your email field and try again!' })
+      }
+
+      if (!user.passwordResetToken || !user.resetTokenExpiration) {
+        return res.status(404).json({ error: 'Password reset token not found, please generate a new one!' })
       }
 
       if (token !== user.passwordResetToken) {
