@@ -12,6 +12,9 @@ interface TemplateVars {
   link: string
 }
 
+const apiKey = process.env.API_KEY
+const domain = process.env.domain
+
 class Mail {
   public to!: string
   public subject!: string
@@ -23,7 +26,7 @@ class Mail {
   public error!: string
 
   constructor () {
-    this.mg = mailgun({ apiKey: process.env.API_KEY, domain: process.env.DOMAIN })
+    if (apiKey && domain) this.mg = mailgun({ apiKey, domain })
   }
 
   public send = async () => {
